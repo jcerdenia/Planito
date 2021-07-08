@@ -1,0 +1,2 @@
+rootProject.name = "Planito"
+include ':app'
