@@ -9,4 +9,5 @@
     <string name="colon">:</string>
     <string name="Hour">Hour</string>
     <string name="minute">Minute</string>
+    <string name="delete">Delete</string>
 </resources>

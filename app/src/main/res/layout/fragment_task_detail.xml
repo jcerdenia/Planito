@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,6 +12,7 @@
 
     <EditText
         android:id="@+id/name_edit_text"
+        android:inputType="textCapWords|textShortMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -26,9 +24,9 @@
 
     <EditText
         android:id="@+id/description_edit_text"
+        android:inputType="textCapSentences"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:lines="2"/>
+        android:layout_height="wrap_content" />
 
     <TextView
         android:layout_marginTop="16dp"
@@ -48,53 +46,55 @@
         android:layout_height="wrap_content"
         android:text="@string/duration"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/duration_hour_edit_text"
-            android:layout_width="0dp"
+            android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:hint="@string/Hour"
-            android:inputType="number"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:inputType="number" />
 
         <TextView
-            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/colon"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="@string/colon" />
 
         <EditText
             android:id="@+id/duration_minute_edit_text"
-            android:layout_width="0dp"
+            android:layout_width="96dp"
             android:layout_height="wrap_content"
             android:hint="@string/minute"
-            android:inputType="number"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:inputType="number" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
-    <Button
+    <LinearLayout
         android:layout_marginTop="16dp"
-        android:id="@+id/save_button"
+        android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/save"/>
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/delete"/>
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/save"/>
+    </LinearLayout>
 </LinearLayout>

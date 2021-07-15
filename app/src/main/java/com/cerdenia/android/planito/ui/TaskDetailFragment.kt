@@ -18,7 +18,7 @@ class TaskDetailFragment : Fragment() {
 
     interface Callbacks {
 
-        fun onTaskSaved()
+        fun onTaskSavedOrDeleted()
     }
 
     private var _binding: FragmentTaskDetailBinding? = null
@@ -55,9 +55,14 @@ class TaskDetailFragment : Fragment() {
             task?.let { updateUI(it) }
         })
 
+        binding.deleteButton.setOnClickListener {
+            viewModel.deleteCurrentTask()
+            callbacks?.onTaskSavedOrDeleted()
+        }
+
         binding.saveButton.setOnClickListener {
             saveUIData()
-            callbacks?.onTaskSaved()
+            callbacks?.onTaskSavedOrDeleted()
         }
     }
 
@@ -73,8 +78,12 @@ class TaskDetailFragment : Fragment() {
     private fun saveUIData() {
         val name = binding.nameEditText.text.toString()
         val description = binding.descriptionEditText.text.toString()
-        val startTime = TaskTime(binding.startTimePicker.hour, binding.startTimePicker.minute)
-        val duration = TaskTime(binding.durationHourEditText.text.toInt(), binding.durationMinuteEditText.text.toInt())
+        val startTimeHour = binding.startTimePicker.hour
+        val startTimeMinute = binding.startTimePicker.minute
+        val startTime = TaskTime(startTimeHour, startTimeMinute)
+        val durationHour = binding.durationHourEditText.text.toInt()
+        val durationMinute = binding.durationMinuteEditText.text.toInt()
+        val duration = TaskTime(durationHour, durationMinute)
         viewModel.saveData(name, description, startTime, duration)
     }
 

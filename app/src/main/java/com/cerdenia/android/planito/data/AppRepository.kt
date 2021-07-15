@@ -21,6 +21,10 @@ class AppRepository private constructor(db: AppDatabase) {
         executor.execute { dao.updateTask(task) }
     }
 
+    fun deleteTaskByID(id: UUID) {
+        executor.execute { dao.deleteTaskByID(id) }
+    }
+
     companion object {
 
         private var INSTANCE: AppRepository? = null

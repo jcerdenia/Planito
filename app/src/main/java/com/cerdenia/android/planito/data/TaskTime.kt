@@ -9,7 +9,7 @@ data class TaskTime(
         return (hour * 60) + minute
     }
 
-    fun to24hourFormat(): String {
+    fun to24HourFormat(): String {
         val (hour, minute) = listOf(this.hour, this.minute).map {
             if (it.toString().length == 1) "0$it" else it
         }

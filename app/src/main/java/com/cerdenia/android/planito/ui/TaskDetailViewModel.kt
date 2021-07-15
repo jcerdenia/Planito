@@ -34,4 +34,10 @@ class TaskDetailViewModel(
             repo.updateTask(task)
         }
     }
+
+    fun deleteCurrentTask() {
+        currentTask?.let { task ->
+            repo.deleteTaskByID(task.id)
+        }
+    }
 }

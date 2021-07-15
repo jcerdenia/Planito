@@ -13,7 +13,7 @@ data class Task(
     var description: String = "",
     @ColumnInfo(name = "start_time")
     var startTime: TaskTime = TaskTime(0, 0),
-    var duration: TaskTime = TaskTime(0, 0),
+    var duration: TaskTime = TaskTime(1, 0),
     var recurrence: Int = Recurrence.DAILY.ordinal,
 ) {
 

@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito
+package com.cerdenia.android.planito.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -43,8 +43,8 @@ class TaskListAdapter(
         fun bind(task: Task) {
             taskID = task.id
             binding.nameTextView.text = task.name
-            binding.startTimeTextView.text = task.startTime.to24hourFormat()
-            binding.durationTextView.text = task.duration.to24hourFormat()
+            binding.startTimeTextView.text = task.startTime.to24HourFormat()
+            binding.durationTextView.text = task.duration.to24HourFormat()
         }
 
         override fun onClick(p0: View?) {
@@ -53,6 +53,7 @@ class TaskListAdapter(
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<Task>() {
+
         override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
             return oldItem.id == newItem.id
         }

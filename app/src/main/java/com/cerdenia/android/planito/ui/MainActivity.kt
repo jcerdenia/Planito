@@ -3,6 +3,7 @@ package com.cerdenia.android.planito.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.cerdenia.android.planito.databinding.ActivityMainBinding
+import java.text.DateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity(),
@@ -23,6 +24,10 @@ class MainActivity : AppCompatActivity(),
                 .beginTransaction()
                 .add(fragCon, TaskListFragment.newInstance())
                 .commit()
+
+            supportActionBar?.title = DateFormat
+                .getDateInstance(DateFormat.MEDIUM)
+                .format(Date())
         }
     }
 
@@ -34,7 +39,7 @@ class MainActivity : AppCompatActivity(),
             .commit()
     }
 
-    override fun onTaskSaved() {
+    override fun onTaskSavedOrDeleted() {
         onBackPressed()
     }
 }

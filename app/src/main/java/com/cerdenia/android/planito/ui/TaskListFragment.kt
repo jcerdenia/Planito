@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.cerdenia.android.planito.TaskListAdapter
 import com.cerdenia.android.planito.data.Task
 import com.cerdenia.android.planito.data.TaskTime
 import com.cerdenia.android.planito.databinding.FragmentTaskListBinding
+import java.text.DateFormat
 import java.util.*
 
 class TaskListFragment : Fragment(), TaskListAdapter.Listener {
@@ -49,7 +49,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.tasksLive.observe(viewLifecycleOwner, { tasks ->
-            adapter.submitList(tasks.sortedBy { it.endTime.toMinutes() })
+            adapter.submitList(tasks)
         })
 
         binding.fab.setOnClickListener {
