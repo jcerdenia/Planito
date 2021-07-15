@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cerdenia.android.planito.data.Task
 import com.cerdenia.android.planito.data.TaskTime
 import com.cerdenia.android.planito.databinding.FragmentTaskListBinding
-import java.text.DateFormat
 import java.util.*
 
 class TaskListFragment : Fragment(), TaskListAdapter.Listener {
@@ -31,7 +30,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = context as Callbacks?
-        adapter = TaskListAdapter(this@TaskListFragment)
+        adapter = TaskListAdapter(context.resources, this@TaskListFragment)
     }
 
     override fun onCreateView(

@@ -1,16 +1,19 @@
 package com.cerdenia.android.planito.ui
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.Task
 import com.cerdenia.android.planito.databinding.ListItemTaskBinding
 import java.util.*
 
 class TaskListAdapter(
+    private val resources: Resources,
     private val listener: Listener
 ): ListAdapter<Task, TaskListAdapter.TaskHolder>(DiffCallback()) {
 
@@ -43,8 +46,18 @@ class TaskListAdapter(
         fun bind(task: Task) {
             taskID = task.id
             binding.nameTextView.text = task.name
-            binding.startTimeTextView.text = task.startTime.to24HourFormat()
-            binding.durationTextView.text = task.duration.to24HourFormat()
+
+            binding.timeRangeTextView.text = resources.getString(
+                R.string.time_range,
+                task.startTime.to12HourFormat(),
+                task.endTime.to12HourFormat()
+            )
+
+            binding.durationTextView.text = resources.getString(
+                R.string.duration_text,
+                resources.getQuantityString(R.plurals.hours, task.duration.hour, task.duration.hour),
+                resources.getQuantityString(R.plurals.minutes, task.duration.minute, task.duration.minute)
+            )
         }
 
         override fun onClick(p0: View?) {

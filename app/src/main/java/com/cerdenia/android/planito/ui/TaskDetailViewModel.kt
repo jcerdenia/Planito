@@ -1,9 +1,6 @@
 package com.cerdenia.android.planito.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.cerdenia.android.planito.data.AppRepository
 import com.cerdenia.android.planito.data.Task
 import com.cerdenia.android.planito.data.TaskTime
@@ -15,23 +12,40 @@ class TaskDetailViewModel(
 
     private val taskIDLive = MutableLiveData<UUID>()
 
-    val taskLive: LiveData<Task?> = Transformations.switchMap(taskIDLive) { taskID ->
-        repo.getTask(taskID)
+    private val taskDbLive: LiveData<Task?> = Transformations
+        .switchMap(taskIDLive) { taskID -> repo.getTask(taskID) }
+
+    val taskLive = MediatorLiveData<Task?>()
+
+    val currentTask get () = taskLive.value
+
+    init {
+        taskLive.addSource(taskDbLive) { task ->
+            taskLive.value = task
+        }
     }
-    
-    private val currentTask get () = taskLive.value
 
     fun fetchTask(id: UUID) {
         taskIDLive.value = id
     }
     
-    fun saveData(name: String, description: String, startTime: TaskTime, duration: TaskTime) {
+    fun saveData(name: String, description: String) {
         currentTask?.let { task ->
             task.name = name
             task.description = description
-            task.startTime = startTime
-            task.duration = duration
             repo.updateTask(task)
+        }
+    }
+
+    fun updateStartTime(time: TaskTime) {
+        taskLive.value = currentTask?.apply {
+            startTime = time
+        }
+    }
+
+    fun updateEndTime(time: TaskTime) {
+        taskLive.value = currentTask?.apply {
+            endTime = time
         }
     }
 

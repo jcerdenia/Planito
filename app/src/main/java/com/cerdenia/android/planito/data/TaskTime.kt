@@ -5,16 +5,25 @@ data class TaskTime(
     var minute: Int = 0,
 ) {
 
-    fun toMinutes(): Int {
-        return (hour * 60) + minute
+    fun toMinutes(): Int = (hour * 60) + minute
+
+    private fun to24HourFormat(): String {
+        fun Int.formatted(): String = if (this.toString().length == 1) "0$this" else "$this"
+        return "${hour.formatted()}:${minute.formatted()}"
     }
 
-    fun to24HourFormat(): String {
-        val (hour, minute) = listOf(this.hour, this.minute).map {
-            if (it.toString().length == 1) "0$it" else it
-        }
+    fun to12HourFormat(): String {
+        val timeString = this.to24HourFormat()
+        val hour = timeString.substringBefore(":").toInt()
+        val minute = timeString.substringAfter(":")
 
-        return "$hour:$minute"
+        return when (hour) {
+            0 -> "12:$minute AM"
+            in 1..11 -> "$hour:$minute AM"
+            12 -> "12:$minute PM"
+            in 13..23 -> "${hour - 12}:$minute PM"
+            else -> throw IllegalStateException("Hour must not be more than 23.")
+        }
     }
 
     companion object {

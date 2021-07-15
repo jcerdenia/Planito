@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -11,7 +12,7 @@
         android:text="@string/name"/>
 
     <EditText
-        android:id="@+id/name_edit_text"
+        android:id="@+id/name_field"
         android:inputType="textCapWords|textShortMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -23,7 +24,7 @@
         android:text="@string/description"/>
 
     <EditText
-        android:id="@+id/description_edit_text"
+        android:id="@+id/description_field"
         android:inputType="textCapSentences"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -34,47 +35,25 @@
         android:layout_height="wrap_content"
         android:text="@string/start_time"/>
 
-    <TimePicker
-        android:id="@+id/start_time_picker"
-        android:timePickerMode="spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/start_time_button"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="00:00"/>
 
     <TextView
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/duration"/>
+        android:text="@string/end_time"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/end_time_button"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/duration_hour_edit_text"
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/Hour"
-            android:inputType="number" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/colon" />
-
-        <EditText
-            android:id="@+id/duration_minute_edit_text"
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/minute"
-            android:inputType="number" />
-
-    </LinearLayout>
+        tools:text="00:00"/>
 
     <LinearLayout
         android:layout_marginTop="16dp"

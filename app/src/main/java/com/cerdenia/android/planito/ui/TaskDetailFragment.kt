@@ -11,7 +11,6 @@ import com.cerdenia.android.planito.data.Task
 import com.cerdenia.android.planito.data.TaskTime
 import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
 import com.cerdenia.android.planito.extension.toEditable
-import com.cerdenia.android.planito.extension.toInt
 import java.util.*
 
 class TaskDetailFragment : Fragment() {
@@ -55,6 +54,35 @@ class TaskDetailFragment : Fragment() {
             task?.let { updateUI(it) }
         })
 
+        parentFragmentManager.apply {
+            setFragmentResultListener(PICK_START_TIME, viewLifecycleOwner, { _, result ->
+                handleTimePickerFragmentResult(result) { time ->
+                    viewModel.updateStartTime(time)
+                }
+            })
+
+            setFragmentResultListener(PICK_END_TIME, viewLifecycleOwner, { _, result ->
+                handleTimePickerFragmentResult(result) { time ->
+                    viewModel.updateEndTime(time) }
+            })
+        }
+
+        binding.startTimeButton.setOnClickListener {
+            viewModel.currentTask?.startTime?.let { time ->
+                TimePickerFragment
+                    .newInstance(time, PICK_START_TIME)
+                    .show(parentFragmentManager, TimePickerFragment.TAG)
+            }
+        }
+
+        binding.endTimeButton.setOnClickListener {
+            viewModel.currentTask?.endTime?.let { time ->
+                TimePickerFragment
+                    .newInstance(time, PICK_END_TIME)
+                    .show(parentFragmentManager, TimePickerFragment.TAG)
+            }
+        }
+
         binding.deleteButton.setOnClickListener {
             viewModel.deleteCurrentTask()
             callbacks?.onTaskSavedOrDeleted()
@@ -67,24 +95,25 @@ class TaskDetailFragment : Fragment() {
     }
 
     private fun updateUI(task: Task) {
-        binding.nameEditText.text = task.name.toEditable()
-        binding.descriptionEditText.text = task.description.toEditable()
-        binding.startTimePicker.hour = task.startTime.hour
-        binding.startTimePicker.minute = task.startTime.minute
-        binding.durationHourEditText.text = task.duration.hour.toString().toEditable()
-        binding.durationMinuteEditText.text = task.duration.minute.toString().toEditable()
+        binding.nameField.text = task.name.toEditable()
+        binding.descriptionField.text = task.description.toEditable()
+        binding.startTimeButton.text = task.startTime.to12HourFormat()
+        binding.endTimeButton.text = task.endTime.to12HourFormat()
     }
 
     private fun saveUIData() {
-        val name = binding.nameEditText.text.toString()
-        val description = binding.descriptionEditText.text.toString()
-        val startTimeHour = binding.startTimePicker.hour
-        val startTimeMinute = binding.startTimePicker.minute
-        val startTime = TaskTime(startTimeHour, startTimeMinute)
-        val durationHour = binding.durationHourEditText.text.toInt()
-        val durationMinute = binding.durationMinuteEditText.text.toInt()
-        val duration = TaskTime(durationHour, durationMinute)
-        viewModel.saveData(name, description, startTime, duration)
+        val name = binding.nameField.text.toString()
+        val description = binding.descriptionField.text.toString()
+        viewModel.saveData(name, description)
+    }
+
+    private fun handleTimePickerFragmentResult(
+        result: Bundle,
+        callback: (TaskTime) -> Unit
+    ) {
+        val hour = result.getInt(TimePickerFragment.HOUR)
+        val minute = result.getInt(TimePickerFragment.MINUTE)
+        TaskTime(hour, minute).run { callback(this) }
     }
 
     override fun onDestroyView() {
@@ -99,7 +128,10 @@ class TaskDetailFragment : Fragment() {
 
     companion object {
 
+        private const val TAG = "TaskDetailFragment"
         private const val TASK_ID = "task_id"
+        private const val PICK_START_TIME = "pick_start_time"
+        private const val PICK_END_TIME = "pick_end_time"
 
         fun newInstance(taskID: UUID): TaskDetailFragment {
             return TaskDetailFragment().apply {
