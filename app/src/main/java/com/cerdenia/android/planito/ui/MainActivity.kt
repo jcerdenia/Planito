@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity(),
                 .commit()
 
             supportActionBar?.title = DateFormat
-                .getDateInstance(DateFormat.MEDIUM)
+                .getDateInstance(DateFormat.LONG)
                 .format(Date())
         }
     }

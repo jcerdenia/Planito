@@ -2,12 +2,11 @@ package com.cerdenia.android.planito.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.Task
 import com.cerdenia.android.planito.data.TaskTime
 import com.cerdenia.android.planito.databinding.FragmentTaskListBinding
@@ -41,7 +40,25 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         _binding = FragmentTaskListBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_task_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_item_sync -> handleSync()
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun handleSync(): Boolean {
+        // TODO: sync tasks with calendar
+        return true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,8 +69,11 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         })
 
         binding.fab.setOnClickListener {
-            val newTask = Task()
-            newTask.startTime = viewModel.getLatestItem()?.endTime ?: TaskTime()
+            val newTask = Task().apply {
+                startTime = viewModel.getLatestItem()?.endTime ?: TaskTime()
+                setDuration(60)
+            }
+
             viewModel.addTask(newTask)
             callbacks?.onTaskSelected(newTask.id)
         }

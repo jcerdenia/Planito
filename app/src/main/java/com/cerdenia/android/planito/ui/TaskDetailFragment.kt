@@ -2,11 +2,10 @@ package com.cerdenia.android.planito.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.Task
 import com.cerdenia.android.planito.data.TaskTime
 import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
@@ -44,7 +43,26 @@ class TaskDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTaskDetailBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_task_detail, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_item_delete -> handleDeleteTask()
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun handleDeleteTask(): Boolean {
+        viewModel.deleteCurrentTask()
+        callbacks?.onTaskSavedOrDeleted()
+        return true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,11 +99,6 @@ class TaskDetailFragment : Fragment() {
                     .newInstance(time, PICK_END_TIME)
                     .show(parentFragmentManager, TimePickerFragment.TAG)
             }
-        }
-
-        binding.deleteButton.setOnClickListener {
-            viewModel.deleteCurrentTask()
-            callbacks?.onTaskSavedOrDeleted()
         }
 
         binding.saveButton.setOnClickListener {

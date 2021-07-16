@@ -17,15 +17,15 @@ data class Task(
     var recurrence: Int = Recurrence.DAILY.ordinal,
 ) {
 
-    init {
-        endTime = TaskTime.fromMinutes(startTime.toMinutes() + 60)
-    }
-
     val duration: TaskTime
         get() = TaskTime.fromMinutes(endTime.toMinutes() - startTime.toMinutes())
 
 
     fun setDuration(duration: TaskTime) {
         endTime = TaskTime.fromMinutes(startTime.toMinutes() + duration.toMinutes())
+    }
+
+    fun setDuration(minutes: Int) {
+        endTime = TaskTime.fromMinutes(startTime.toMinutes() + minutes)
     }
 }

@@ -9,10 +9,11 @@
     <string name="colon">:</string>
     <string name="Hour">Hour</string>
     <string name="minute">Minute</string>
-    <string name="delete">Delete</string>
     <string name="time_range">%1$s to %2$s</string>
     <string name="duration_text">%1$s, %2$s</string>
     <string name="end_time">End Time</string>
+    <string name="delete">Delete</string>
+    <string name="sync">Sync</string>
     <plurals name="hours">
         <item quantity="one">1 hour</item>
         <item quantity="other">%d hours</item>
