@@ -6,8 +6,8 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.cerdenia.android.planito.R
-import com.cerdenia.android.planito.data.Task
-import com.cerdenia.android.planito.data.TaskTime
+import com.cerdenia.android.planito.data.model.Task
+import com.cerdenia.android.planito.data.model.TaskTime
 import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
 import com.cerdenia.android.planito.extension.toEditable
 import java.util.*

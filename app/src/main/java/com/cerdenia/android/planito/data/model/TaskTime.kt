@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.data
+package com.cerdenia.android.planito.data.model
 
 data class TaskTime(
     var hour: Int = 0,

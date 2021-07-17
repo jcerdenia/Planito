@@ -1,10 +1,14 @@
 package com.cerdenia.android.planito.data
 
 import com.cerdenia.android.planito.data.db.AppDatabase
+import com.cerdenia.android.planito.data.model.Task
 import java.util.*
 import java.util.concurrent.Executors
 
-class AppRepository private constructor(db: AppDatabase) {
+class AppRepository private constructor(
+    db: AppDatabase,
+    private val calendarEditor: CalendarEditor,
+) {
 
     private val dao = db.taskDao()
     private val executor = Executors.newSingleThreadExecutor()
@@ -25,12 +29,21 @@ class AppRepository private constructor(db: AppDatabase) {
         executor.execute { dao.deleteTaskByID(id) }
     }
 
+    fun syncTasksToCalendar(tasks: List<Task>) {
+        executor.execute {
+            val oldEventIDs = AppPreferences.calendarEventIDs
+            calendarEditor.deleteEvents(oldEventIDs)
+            val newEventIDs = calendarEditor.addEvents(tasks)
+            AppPreferences.calendarEventIDs = newEventIDs
+        }
+    }
+
     companion object {
 
         private var INSTANCE: AppRepository? = null
 
-        fun init(db: AppDatabase) {
-            INSTANCE = AppRepository(db)
+        fun init(db: AppDatabase, calendarEditor: CalendarEditor) {
+            INSTANCE = AppRepository(db, calendarEditor)
         }
 
         fun getInstance(): AppRepository {

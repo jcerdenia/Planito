@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.cerdenia.android.planito.data.AppRepository
-import com.cerdenia.android.planito.data.Task
+import com.cerdenia.android.planito.data.model.Task
 
 class TaskListViewModel(
     private val repo: AppRepository = AppRepository.getInstance()
@@ -13,6 +13,8 @@ class TaskListViewModel(
     private val tasksDbLive = repo.getTasks()
     private val _tasksLive = MediatorLiveData<List<Task>>()
     val tasksLive: LiveData<List<Task>> get() = _tasksLive
+
+    private val tasks get() = tasksLive.value
 
     init {
         _tasksLive.addSource(tasksDbLive) { tasks ->
@@ -26,5 +28,9 @@ class TaskListViewModel(
 
     fun getLatestItem(): Task? {
         return tasksLive.value?.maxByOrNull { it.endTime.toMinutes() }
+    }
+
+    fun syncToCalendar() {
+        tasks?.let { repo.syncTasksToCalendar(it) }
     }
 }

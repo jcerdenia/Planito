@@ -5,7 +5,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
-import com.cerdenia.android.planito.data.TaskTime
+import com.cerdenia.android.planito.data.model.TaskTime
 
 class TimePickerFragment : DialogFragment() {
 

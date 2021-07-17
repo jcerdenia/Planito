@@ -1,8 +1,9 @@
-package com.cerdenia.android.planito.data
+package com.cerdenia.android.planito.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.cerdenia.android.planito.data.Recurrence
 import java.util.*
 
 @Entity

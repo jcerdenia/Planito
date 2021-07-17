@@ -2,8 +2,8 @@ package com.cerdenia.android.planito.ui
 
 import androidx.lifecycle.*
 import com.cerdenia.android.planito.data.AppRepository
-import com.cerdenia.android.planito.data.Task
-import com.cerdenia.android.planito.data.TaskTime
+import com.cerdenia.android.planito.data.model.Task
+import com.cerdenia.android.planito.data.model.TaskTime
 import java.util.*
 
 class TaskDetailViewModel(
