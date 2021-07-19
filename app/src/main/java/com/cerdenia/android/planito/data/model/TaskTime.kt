@@ -1,5 +1,8 @@
 package com.cerdenia.android.planito.data.model
 
+import java.text.DateFormat
+import java.util.*
+
 data class TaskTime(
     var hour: Int = 0,
     var minute: Int = 0,
@@ -7,23 +10,17 @@ data class TaskTime(
 
     fun toMinutes(): Int = (hour * 60) + minute
 
-    private fun to24HourFormat(): String {
-        fun Int.formatted(): String = if (this.toString().length == 1) "0$this" else "$this"
-        return "${hour.formatted()}:${minute.formatted()}"
-    }
-
     fun to12HourFormat(): String {
-        val timeString = this.to24HourFormat()
-        val hour = timeString.substringBefore(":").toInt()
-        val minute = timeString.substringAfter(":")
-
-        return when (hour) {
-            0 -> "12:$minute AM"
-            in 1..11 -> "$hour:$minute AM"
-            12 -> "12:$minute PM"
-            in 13..23 -> "${hour - 12}:$minute PM"
-            else -> throw IllegalStateException("Hour must not be more than 23.")
-        }
+        return Calendar.getInstance()
+            .apply {
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, minute)
+            }
+            .run {
+                DateFormat
+                    .getTimeInstance(DateFormat.SHORT)
+                    .format(this.time)
+            }
     }
 
     companion object {

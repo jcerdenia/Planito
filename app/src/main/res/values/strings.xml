@@ -14,6 +14,15 @@
     <string name="end_time">End Time</string>
     <string name="delete">Delete</string>
     <string name="sync">Sync</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="default_description">A reminder from Planito</string>
+
     <plurals name="hours">
         <item quantity="one">1 hour</item>
         <item quantity="other">%d hours</item>

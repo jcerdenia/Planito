@@ -30,8 +30,8 @@ class TimePickerFragment : DialogFragment() {
 
         const val TAG = "TimePickerFragment"
         const val REQUEST_KEY = "request_key"
-        const val HOUR = "hour"
-        const val MINUTE = "minute"
+        private const val HOUR = "hour"
+        private const val MINUTE = "minute"
 
         fun newInstance(time: TaskTime, requestKey: String): TimePickerFragment {
             return TimePickerFragment().apply {
@@ -41,6 +41,12 @@ class TimePickerFragment : DialogFragment() {
                     putInt(MINUTE, time.minute)
                 }
             }
+        }
+
+        fun unbundleFragmentResult(bundle: Bundle): TaskTime {
+            val hour = bundle.getInt(HOUR)
+            val minute = bundle.getInt(MINUTE)
+            return TaskTime(hour, minute)
         }
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
 import android.util.Log
+import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.model.Task
 import java.util.*
 
@@ -23,17 +24,25 @@ class CalendarEditor(private val context: Context) {
                 timeInMillis
             }
 
-            val endMillis: Long = calendar.run {
+            var endMillis: Long = calendar.run {
                 set(Calendar.HOUR_OF_DAY, task.endTime.hour)
                 set(Calendar.MINUTE, task.endTime.minute)
                 timeInMillis
+            }
+
+            if (endMillis < startMillis) endMillis += 86400000
+
+            val description = if (task.description.isEmpty()) {
+                context.getString(R.string.default_description)
+            } else {
+                task.description
             }
 
             val values = ContentValues().apply {
                 put(CalendarContract.Events.DTSTART, startMillis)
                 put(CalendarContract.Events.DTEND, endMillis)
                 put(CalendarContract.Events.TITLE, task.name)
-                put(CalendarContract.Events.DESCRIPTION, task.description)
+                put(CalendarContract.Events.DESCRIPTION, description)
                 put(CalendarContract.Events.CALENDAR_ID, 1) // Primary calendar.
                 put(CalendarContract.Events.EVENT_TIMEZONE, timeZone)
                 put(CalendarContract.Events.RRULE, "FREQ=DAILY;INTERVAL=1;COUNT=7")
@@ -61,6 +70,6 @@ class CalendarEditor(private val context: Context) {
 
     companion object {
 
-        const val TAG = "CalendarWriter"
+        private const val TAG = "CalendarEditor"
     }
 }

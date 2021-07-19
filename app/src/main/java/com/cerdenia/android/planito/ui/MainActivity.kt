@@ -2,8 +2,9 @@ package com.cerdenia.android.planito.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.cerdenia.android.planito.databinding.ActivityMainBinding
-import java.text.DateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity(),
@@ -20,26 +21,28 @@ class MainActivity : AppCompatActivity(),
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .add(fragCon, TaskListFragment.newInstance())
-                .commit()
-
-            supportActionBar?.title = DateFormat
-                .getDateInstance(DateFormat.LONG)
-                .format(Date())
+            supportFragmentManager.transact { transaction ->
+                transaction.add(fragCon, TaskListFragment.newInstance())
+            }
         }
     }
 
     override fun onTaskSelected(taskID: UUID) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(fragCon, TaskDetailFragment.newInstance(taskID))
-            .addToBackStack(null)
-            .commit()
+        supportFragmentManager.transact { transaction ->
+            transaction.replace(fragCon, TaskDetailFragment.newInstance(taskID))
+            transaction.addToBackStack(null)
+        }
     }
 
     override fun onTaskSavedOrDeleted() {
         onBackPressed()
+    }
+
+    private inline fun FragmentManager.transact(
+        function: (FragmentTransaction) -> Unit
+    ) {
+        val transaction = this.beginTransaction()
+        function(transaction)
+        transaction.commit()
     }
 }

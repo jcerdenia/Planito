@@ -2,24 +2,18 @@ package com.cerdenia.android.planito.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cerdenia.android.planito.R
-import com.cerdenia.android.planito.data.CalendarEditor
 import com.cerdenia.android.planito.data.model.Task
 import com.cerdenia.android.planito.data.model.TaskTime
 import com.cerdenia.android.planito.databinding.FragmentTaskListBinding
 import com.cerdenia.android.planito.util.CalendarPermissions
 import java.util.*
 
-class TaskListFragment : Fragment(),
-    TaskListAdapter.Listener,
-    CalendarPermissions.Launcher {
+class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
     interface Callbacks {
 
@@ -33,17 +27,13 @@ class TaskListFragment : Fragment(),
     private lateinit var adapter: TaskListAdapter
     private var callbacks: Callbacks? = null
 
-    override val calendarPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val isGranted = permissions.all { it.value == true }
-        if (isGranted) viewModel.syncToCalendar()
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         callbacks = context as Callbacks?
-        adapter = TaskListAdapter(context.resources, this@TaskListFragment)
+        adapter = TaskListAdapter(context.resources, this)
+        CalendarPermissions.setResultIfGranted(this) {
+            viewModel.syncToCalendar()
+        }
     }
 
     override fun onCreateView(
@@ -71,11 +61,10 @@ class TaskListFragment : Fragment(),
     }
 
     private fun handleSync(): Boolean {
-        // TODO: sync tasks with calendar
-        if (CalendarPermissions.isGranted(requireContext())) {
+        if (CalendarPermissions.isGranted(context)) {
             viewModel.syncToCalendar()
         } else {
-            calendarPermissionLauncher.launch(CalendarPermissions.list)
+            CalendarPermissions.request()
         }
 
         return true
@@ -110,6 +99,7 @@ class TaskListFragment : Fragment(),
 
     override fun onDetach() {
         super.onDetach()
+        CalendarPermissions.cleanup()
         callbacks = null
     }
 
