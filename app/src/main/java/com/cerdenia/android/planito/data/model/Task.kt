@@ -1,6 +1,5 @@
 package com.cerdenia.android.planito.data.model
 
-import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -19,15 +18,14 @@ data class Task(
     var days: Set<Day> = Day.values().toSet()
 ) {
 
-    init {
-        Log.d("Tasks", "Task initialized: $this")
-    }
-
     val duration: TaskTime get() {
-        val offset = if (endTime.toMinutes() < startTime.toMinutes()) 1440 else 0
-        return TaskTime.fromMinutes((endTime.toMinutes() + offset) - startTime.toMinutes())
+        val startMinutes = startTime.toMinutes()
+        val endMinutes = endTime.toMinutes()
+        val offset = if (endMinutes < startMinutes) 1440 else 0
+        return ((endMinutes + offset) - startMinutes).run {
+            TaskTime.fromMinutes(this)
+        }
     }
-
 
     fun setDuration(minutes: Int) {
         endTime = TaskTime.fromMinutes(startTime.toMinutes() + minutes)

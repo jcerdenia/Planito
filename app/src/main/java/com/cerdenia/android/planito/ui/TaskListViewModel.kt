@@ -18,7 +18,7 @@ class TaskListViewModel(
 
     init {
         _tasksLive.addSource(tasksDbLive) { tasks ->
-            _tasksLive.value = tasks.sortedBy { it.endTime.toMinutes() }
+            _tasksLive.value = tasks.sortedBy { it.startTime.toMinutes() }
         }
     }
 
