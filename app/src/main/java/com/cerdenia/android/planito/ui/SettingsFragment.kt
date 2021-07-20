@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.cerdenia.android.planito.data.AppPreferences
 import com.cerdenia.android.planito.databinding.FragmentSettingsBinding
 import com.cerdenia.android.planito.extension.toEditable
 import com.cerdenia.android.planito.util.AfterTextChangedListener
@@ -21,7 +20,7 @@ class SettingsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getUserCalendars(AppPreferences.userCalendarName)
+        viewModel.fetchUserCalendars()
     }
 
     override fun onCreateView(
@@ -43,14 +42,14 @@ class SettingsFragment : Fragment() {
 
             viewModel.calendars
                 ?.map { it.id }
-                ?.indexOfFirst { it == AppPreferences.userCalendarID }
+                ?.indexOfFirst { it == viewModel.userCalendarID }
                 ?.run { binding.calendarSpinner.setSelection(this) }
         })
 
         binding.calendarOwnerField.apply {
-            text = AppPreferences.userCalendarName.toEditable()
-            addTextChangedListener(AfterTextChangedListener { id ->
-                viewModel.getUserCalendars(id.toString())
+            text = viewModel.userCalendarOwner.toEditable()
+            addTextChangedListener(AfterTextChangedListener { calendarOwner ->
+                viewModel.fetchUserCalendars(calendarOwner)
             })
         }
 
@@ -60,10 +59,7 @@ class SettingsFragment : Fragment() {
 
         binding.saveButton.setOnClickListener {
             val i = binding.calendarSpinner.selectedItemPosition
-            viewModel.calendars?.get(i)?.let { calendar ->
-                AppPreferences.setUserCalendarDetails(calendar.id, calendar.ownerAccount)
-            }
-
+            viewModel.setCalendarSelection(i)
             requireActivity().onBackPressed()
         }
     }

@@ -17,13 +17,12 @@ import java.util.*
 class CalendarEditor(private val context: Context) {
 
     fun getCalendars(ownerAccount: String): LiveData<List<UserCalendar>> {
-        Log.d(TAG, "Querying calendar...")
         val calendarsLive = MutableLiveData<List<UserCalendar>>()
         val calendars = mutableListOf<UserCalendar>()
 
-        // Run query
+        // Run query.
         val uri = CalendarContract.Calendars.CONTENT_URI
-        val selection = "(${CalendarContract.Calendars.OWNER_ACCOUNT} = ?)"
+        val selection = "(${CalendarContract.Calendars.ACCOUNT_NAME} = ?)"
         val selectionArgs = arrayOf(ownerAccount)
         val cursor: Cursor? = context.contentResolver
             .query(uri, EVENT_PROJECTION, selection, selectionArgs, null)
@@ -34,7 +33,8 @@ class CalendarEditor(private val context: Context) {
             val calID = cursor.getLong(PROJECTION_ID_INDEX)
             val displayName = cursor.getString(PROJECTION_DISPLAY_NAME_INDEX)
             val accountName = cursor.getString(PROJECTION_ACCOUNT_NAME_INDEX)
-            calendars.add(UserCalendar(calID, displayName, accountName, ownerAccount))
+            val calendar = UserCalendar(calID, displayName, accountName, ownerAccount)
+            calendars.add(calendar)
         }
 
         cursor?.close()

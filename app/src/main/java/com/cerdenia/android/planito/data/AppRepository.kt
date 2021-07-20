@@ -1,9 +1,7 @@
 package com.cerdenia.android.planito.data
 
-import androidx.lifecycle.LiveData
 import com.cerdenia.android.planito.data.db.AppDatabase
 import com.cerdenia.android.planito.data.model.Task
-import com.cerdenia.android.planito.data.model.UserCalendar
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -14,10 +12,6 @@ class AppRepository private constructor(
 
     private val dao = db.taskDao()
     private val executor = Executors.newSingleThreadExecutor()
-    
-    init {
-        //executor.execute { calEditor.query() }
-    }
 
     fun addTask(task: Task) {
         executor.execute { dao.addTask(task) }
@@ -37,11 +31,11 @@ class AppRepository private constructor(
 
     fun getUserCalendars(ownerAccount: String) = calEditor.getCalendars(ownerAccount)
 
-    fun syncTasksToCalendar(tasks: List<Task>) {
+    fun syncTasksToCalendar(calendarID: Long, tasks: List<Task>) {
         executor.execute {
             val oldEventIDs = AppPreferences.calendarEventIDs
             calEditor.deleteEvents(oldEventIDs)
-            val newEventIDs = calEditor.addEvents(AppPreferences.userCalendarID, tasks)
+            val newEventIDs = calEditor.addEvents(calendarID, tasks)
             AppPreferences.calendarEventIDs = newEventIDs
         }
     }

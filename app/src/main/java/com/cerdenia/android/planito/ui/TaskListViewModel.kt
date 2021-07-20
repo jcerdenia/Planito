@@ -3,6 +3,7 @@ package com.cerdenia.android.planito.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import com.cerdenia.android.planito.data.AppPreferences
 import com.cerdenia.android.planito.data.AppRepository
 import com.cerdenia.android.planito.data.model.Task
 
@@ -31,6 +32,6 @@ class TaskListViewModel(
     }
 
     fun syncToCalendar() {
-        tasks?.let { repo.syncTasksToCalendar(it) }
+        tasks?.let { repo.syncTasksToCalendar(AppPreferences.calendarID, it) }
     }
 }

@@ -12,7 +12,7 @@ class PlanitoApplication : Application() {
         super.onCreate()
         AppPreferences.init(this)
         val db = AppDatabase.build(this)
-        val calendarWriter = CalendarEditor(this)
-        AppRepository.init(db, calendarWriter)
+        val calEditor = CalendarEditor(this)
+        AppRepository.init(db, calEditor)
     }
 }
