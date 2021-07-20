@@ -4,9 +4,7 @@ import androidx.lifecycle.*
 import com.cerdenia.android.planito.data.AppRepository
 import com.cerdenia.android.planito.data.Day
 import com.cerdenia.android.planito.data.model.Task
-import com.cerdenia.android.planito.data.model.TaskSansTimes
 import com.cerdenia.android.planito.data.model.TaskTime
-import com.cerdenia.android.planito.data.model.TaskTimes
 import java.util.*
 
 class TaskDetailViewModel(
@@ -14,25 +12,32 @@ class TaskDetailViewModel(
 ) : ViewModel() {
 
     private val taskIDLive = MutableLiveData<UUID>()
-
-    private val taskLive: LiveData<Task?> = Transformations
+    private val taskDbLive: LiveData<Task?> = Transformations
         .switchMap(taskIDLive) { taskID -> repo.getTask(taskID) }
 
-    val currentTask get() = taskLive.value
+    private val _taskLive = MediatorLiveData<Task?>()
+    val taskLive: LiveData<Task?> get() = _taskLive
+    private val currentTask get() = taskDbLive.value
 
-    private val _taskSansTimes = MediatorLiveData<TaskSansTimes>()
-    val taskSansTimes: LiveData<TaskSansTimes> get() = _taskSansTimes
-
-    private val _taskTimes = MediatorLiveData<TaskTimes>()
-    val taskTimes: LiveData<TaskTimes> = _taskTimes
+    var taskName = ""
+        private set
+    private var taskDescription = ""
+    var taskStart = TaskTime(0, 0)
+        private set
+    var taskEnd = TaskTime(0, 0)
+        private set
+    private var taskDays = setOf<Day>()
+    var isFirstTimeLoading = true
+        private set
 
     init {
-        _taskSansTimes.addSource(taskLive) { task ->
-            _taskSansTimes.value = task?.sansTimes()
-        }
-
-        _taskTimes.addSource(taskLive) { task ->
-            _taskTimes.value = task?.times()
+        _taskLive.addSource(taskDbLive) { task ->
+            _taskLive.value = if (isFirstTimeLoading) {
+                task?.let { onTaskFirstTimeLoaded(it) }
+                task
+            } else {
+                getTaskWithUnsavedChanges()
+            }
         }
     }
 
@@ -40,35 +45,44 @@ class TaskDetailViewModel(
         taskIDLive.value = id
     }
 
-    fun updateTaskStartTime(time: TaskTime) {
-        _taskTimes.value = _taskTimes.value?.apply {
-            start = time
-        }
-    }
-
-    fun updateTaskEndTime(time: TaskTime) {
-        _taskTimes.value = _taskTimes.value?.apply {
-            end = time
-        }
+    private fun onTaskFirstTimeLoaded(task: Task) {
+        taskName = task.name
+        taskDescription = task.description
+        taskStart = task.startTime
+        taskEnd = task.endTime
+        taskDays = task.days
+        isFirstTimeLoading = false
     }
 
     fun updateTaskDetails(name: String, description: String, days: Set<Day>) {
-        _taskSansTimes.value = TaskSansTimes(name, description, days)
+        taskName = name
+        taskDescription = description
+        taskDays = days
     }
 
-    fun confirmChanges() {
+    fun onTaskStartTimeChanged(time: TaskTime) {
+        taskStart = time
+    }
+
+    fun onTaskEndTimeChanged(time: TaskTime) {
+        taskEnd = time
+    }
+
+    private fun getTaskWithUnsavedChanges(): Task = Task(
+        name = taskName,
+        description = taskDescription,
+        startMinutes = taskStart.toMinutes(),
+        endMinutes = taskEnd.toMinutes(),
+        days = taskDays
+    )
+
+    fun saveChanges() {
         currentTask?.let { task ->
-            _taskSansTimes.value?.let {
-                task.name = it.name
-                task.description = it.description
-                task.days = it.days
-            }
-
-            _taskTimes.value?.let {
-                task.startTime = it.start
-                task.endTime = it.end
-            }
-
+            task.name = taskName
+            task.description = taskDescription
+            task.startMinutes = taskStart.toMinutes()
+            task.endMinutes = taskEnd.toMinutes()
+            task.days = taskDays
             repo.updateTask(task)
         }
     }

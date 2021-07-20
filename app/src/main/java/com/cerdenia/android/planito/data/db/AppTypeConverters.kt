@@ -14,12 +14,6 @@ class AppTypeConverters {
     fun toUUID(uuid: String?): UUID? = UUID.fromString(uuid)
 
     @TypeConverter
-    fun fromTaskTime(taskTime: TaskTime?): Int? = taskTime?.toMinutes()
-
-    @TypeConverter
-    fun toTaskTime(minutes: Int?) = minutes?.let { TaskTime.fromMinutes(it) }
-
-    @TypeConverter
     fun fromDaySet(daySet: Set<Day>?): String? = daySet?.joinToString()
 
     @TypeConverter

@@ -58,6 +58,11 @@ class TaskListAdapter(
                 resources.getQuantityString(R.plurals.hours, task.duration.hour, task.duration.hour),
                 resources.getQuantityString(R.plurals.minutes, task.duration.minute, task.duration.minute)
             )
+
+            binding.daysTextView.text = task.days
+                .toList()
+                .sortedBy { it.ordinal }
+                .joinToString { it.name.substring(0, 3) }
         }
 
         override fun onClick(p0: View?) {

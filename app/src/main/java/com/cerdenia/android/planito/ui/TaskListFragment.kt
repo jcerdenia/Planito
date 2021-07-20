@@ -8,7 +8,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.model.Task
-import com.cerdenia.android.planito.data.model.TaskTime
 import com.cerdenia.android.planito.databinding.FragmentTaskListBinding
 import com.cerdenia.android.planito.util.CalendarPermissions
 import java.util.*
@@ -18,6 +17,8 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
     interface Callbacks {
 
         fun onTaskSelected(taskID: UUID)
+
+        fun onTaskSettingsClicked()
     }
 
     private var _binding: FragmentTaskListBinding? = null
@@ -48,6 +49,24 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.tasksLive.observe(viewLifecycleOwner, { tasks ->
+            adapter.submitList(tasks)
+        })
+
+        binding.fab.setOnClickListener {
+            val newTask = Task().apply {
+                startMinutes = viewModel.getLatestItem()?.endMinutes ?: 0
+                setDuration(60)
+            }
+
+            viewModel.addTask(newTask)
+            callbacks?.onTaskSelected(newTask.id)
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_task_list, menu)
@@ -56,6 +75,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_item_sync -> handleSync()
+            R.id.menu_item_settings -> handleOpenSettings()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -70,22 +90,9 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         return true
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel.tasksLive.observe(viewLifecycleOwner, { tasks ->
-            adapter.submitList(tasks)
-        })
-
-        binding.fab.setOnClickListener {
-            val newTask = Task().apply {
-                startTime = viewModel.getLatestItem()?.endTime ?: TaskTime()
-                setDuration(60)
-            }
-
-            viewModel.addTask(newTask)
-            callbacks?.onTaskSelected(newTask.id)
-        }
+    private fun handleOpenSettings(): Boolean {
+        callbacks?.onTaskSettingsClicked()
+        return true
     }
 
     override fun onTaskSelected(taskID: UUID) {

@@ -1,13 +1,15 @@
 package com.cerdenia.android.planito.data
 
+import android.content.Context
+
 enum class Day {
+    SUNDAY,
     MONDAY,
     TUESDAY,
     WEDNESDAY,
     THURSDAY,
     FRIDAY,
-    SATURDAY,
-    SUNDAY;
+    SATURDAY;
 
     companion object {
 

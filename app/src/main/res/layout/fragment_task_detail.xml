@@ -57,6 +57,13 @@
             tools:text="00:00" />
 
         <CheckBox
+            android:id="@+id/sunday_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sunday"
+            />
+
+        <CheckBox
             android:id="@+id/monday_check_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -96,13 +103,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/saturday"
-            />
-
-        <CheckBox
-            android:id="@+id/sunday_check_box"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sunday"
             />
 
         <Button

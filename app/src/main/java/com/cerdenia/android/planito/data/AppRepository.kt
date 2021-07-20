@@ -1,17 +1,23 @@
 package com.cerdenia.android.planito.data
 
+import androidx.lifecycle.LiveData
 import com.cerdenia.android.planito.data.db.AppDatabase
 import com.cerdenia.android.planito.data.model.Task
+import com.cerdenia.android.planito.data.model.UserCalendar
 import java.util.*
 import java.util.concurrent.Executors
 
 class AppRepository private constructor(
     db: AppDatabase,
-    private val calendarEditor: CalendarEditor,
+    private val calEditor: CalendarEditor,
 ) {
 
     private val dao = db.taskDao()
     private val executor = Executors.newSingleThreadExecutor()
+    
+    init {
+        //executor.execute { calEditor.query() }
+    }
 
     fun addTask(task: Task) {
         executor.execute { dao.addTask(task) }
@@ -29,11 +35,13 @@ class AppRepository private constructor(
         executor.execute { dao.deleteTaskByID(id) }
     }
 
+    fun getUserCalendars(ownerAccount: String) = calEditor.getCalendars(ownerAccount)
+
     fun syncTasksToCalendar(tasks: List<Task>) {
         executor.execute {
             val oldEventIDs = AppPreferences.calendarEventIDs
-            calendarEditor.deleteEvents(oldEventIDs)
-            val newEventIDs = calendarEditor.addEvents(tasks)
+            calEditor.deleteEvents(oldEventIDs)
+            val newEventIDs = calEditor.addEvents(AppPreferences.userCalendarID, tasks)
             AppPreferences.calendarEventIDs = newEventIDs
         }
     }
@@ -42,8 +50,8 @@ class AppRepository private constructor(
 
         private var INSTANCE: AppRepository? = null
 
-        fun init(db: AppDatabase, calendarEditor: CalendarEditor) {
-            INSTANCE = AppRepository(db, calendarEditor)
+        fun init(db: AppDatabase, calEditor: CalendarEditor) {
+            INSTANCE = AppRepository(db, calEditor)
         }
 
         fun getInstance(): AppRepository {

@@ -9,6 +9,8 @@ object AppPreferences {
 
     private const val NAME = "AppPreferences"
     private const val CALENDAR_EVENT_IDS = "calendar_event_ids"
+    private const val USER_CALENDAR_ID = "calendar_id"
+    private const val USER_CALENDAR_NAME = "user_calendar_name"
 
     fun init(context: Context) {
         preferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
@@ -25,4 +27,17 @@ object AppPreferences {
         set(value) = preferences.edit { editor ->
             editor.putStringSet(CALENDAR_EVENT_IDS, value.toSet())
         }
+
+    val userCalendarID: Long
+        get() = preferences.getLong(USER_CALENDAR_ID, 1)
+
+    val userCalendarName: String
+        get() = preferences.getString(USER_CALENDAR_NAME, "") ?: ""
+
+    fun setUserCalendarDetails(id: Long, name: String) {
+        preferences.edit { editor ->
+            editor.putLong(USER_CALENDAR_ID, id)
+            editor.putString(USER_CALENDAR_NAME, name)
+        }
+    }
 }

@@ -2,8 +2,6 @@ package com.cerdenia.android.planito.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.*
 import android.widget.CheckBox
 import androidx.fragment.app.Fragment
@@ -12,6 +10,7 @@ import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.Day
 import com.cerdenia.android.planito.data.model.Task
 import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
+import com.cerdenia.android.planito.extension.getDayCheckBoxes
 import com.cerdenia.android.planito.extension.toEditable
 import java.util.*
 
@@ -37,6 +36,8 @@ class TaskDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
         arguments?.getString(TASK_ID)
             ?.run { UUID.fromString(this) }
             ?.run { viewModel.fetchTask(this) }
@@ -48,21 +49,49 @@ class TaskDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTaskDetailBinding.inflate(inflater, container, false)
-        setHasOptionsMenu(true)
-        setupDayButtons()
+        dayCheckBoxes = binding.getDayCheckBoxes()
         return binding.root
     }
 
-    private fun setupDayButtons() {
-        dayCheckBoxes = listOf(
-            binding.mondayCheckBox,
-            binding.tuesdayCheckBox,
-            binding.wednesdayCheckBox,
-            binding.thursdayCheckBox,
-            binding.fridayCheckBox,
-            binding.saturdayCheckBox,
-            binding.sundayCheckBox
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.taskLive.observe(viewLifecycleOwner, { task ->
+            task?.let { updateUI(it) }
+        })
+
+
+        parentFragmentManager.apply {
+            setFragmentResultListener(PICK_START_TIME, viewLifecycleOwner, { _, result ->
+                val time = TimePickerFragment.unbundleFragmentResult(result)
+                binding.startTimeButton.text = time.to12HourFormat()
+                viewModel.onTaskStartTimeChanged(time)
+            })
+
+            setFragmentResultListener(PICK_END_TIME, viewLifecycleOwner, { _, result ->
+                val time = TimePickerFragment.unbundleFragmentResult(result)
+                binding.endTimeButton.text = time.to12HourFormat()
+                viewModel.onTaskEndTimeChanged(time)
+            })
+        }
+
+        binding.startTimeButton.setOnClickListener {
+            TimePickerFragment
+                .newInstance(viewModel.taskStart, PICK_START_TIME)
+                .show(parentFragmentManager, TimePickerFragment.TAG)
+        }
+
+        binding.endTimeButton.setOnClickListener {
+            TimePickerFragment
+                .newInstance(viewModel.taskEnd, PICK_END_TIME)
+                .show(parentFragmentManager, TimePickerFragment.TAG)
+        }
+
+        binding.saveButton.setOnClickListener {
+            updateTaskDetails()
+            viewModel.saveChanges()
+            callbacks?.onTaskSavedOrDeleted()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -72,71 +101,27 @@ class TaskDetailFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_item_delete -> handleDeleteTask()
+            R.id.menu_item_delete -> {
+                viewModel.deleteCurrentTask()
+                callbacks?.onTaskSavedOrDeleted()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun handleDeleteTask(): Boolean {
-        viewModel.deleteCurrentTask()
-        callbacks?.onTaskSavedOrDeleted()
-        return true
-    }
+    private fun updateUI(task: Task) {
+        binding.nameField.text = task.name.toEditable()
+        binding.descriptionField.text = task.description.toEditable()
+        binding.startTimeButton.text = task.startTime.to12HourFormat()
+        binding.endTimeButton.text = task.endTime.to12HourFormat()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewModel.taskSansTimes.observe(viewLifecycleOwner, { task ->
-            binding.nameField.text = task.name.toEditable()
-            binding.descriptionField.text = task.description.toEditable()
-            dayCheckBoxes.forEachIndexed { i, checkBox ->
-                checkBox.isChecked = task.days.contains(Day.list[i])
-            }
-        })
-
-        viewModel.taskTimes.observe(viewLifecycleOwner, { times ->
-            binding.startTimeButton.text = times.start.to12HourFormat()
-            binding.endTimeButton.text = times.end.to12HourFormat()
-        })
-
-        parentFragmentManager.apply {
-            setFragmentResultListener(PICK_START_TIME, viewLifecycleOwner, { _, result ->
-                TimePickerFragment.unbundleFragmentResult(result).run {
-                    viewModel.updateTaskStartTime(this)
-                }
-            })
-
-            setFragmentResultListener(PICK_END_TIME, viewLifecycleOwner, { _, result ->
-                TimePickerFragment.unbundleFragmentResult(result).run {
-                    viewModel.updateTaskEndTime(this)
-                }
-            })
-        }
-
-        binding.startTimeButton.setOnClickListener {
-            viewModel.currentTask?.startTime?.let { time ->
-                TimePickerFragment
-                    .newInstance(time, PICK_START_TIME)
-                    .show(parentFragmentManager, TimePickerFragment.TAG)
-            }
-        }
-
-        binding.endTimeButton.setOnClickListener {
-            viewModel.currentTask?.endTime?.let { time ->
-                TimePickerFragment
-                    .newInstance(time, PICK_END_TIME)
-                    .show(parentFragmentManager, TimePickerFragment.TAG)
-            }
-        }
-
-        binding.saveButton.setOnClickListener {
-            softSaveChanges()
-            viewModel.confirmChanges()
-            callbacks?.onTaskSavedOrDeleted()
+        dayCheckBoxes.forEachIndexed { i, checkBox ->
+            checkBox.isChecked = task.days.contains(Day.list[i])
         }
     }
 
-    private fun softSaveChanges() {
+    private fun updateTaskDetails() {
         val name = binding.nameField.text.toString()
         val description = binding.descriptionField.text.toString()
         val days = dayCheckBoxes
@@ -149,13 +134,9 @@ class TaskDetailFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        updateTaskDetails()
         _binding = null
-    }
-
-    override fun onPause() {
-        super.onPause()
-        softSaveChanges()
+        super.onDestroyView()
     }
 
     override fun onDetach() {

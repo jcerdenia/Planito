@@ -7,4 +7,9 @@
         android:title="@string/sync"
         android:icon="@drawable/ic_sync"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_item_settings"
+        android:title="@string/settings"
+        app:showAsAction="never"/>
 </menu>

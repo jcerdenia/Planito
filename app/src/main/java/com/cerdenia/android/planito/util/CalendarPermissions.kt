@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 
 object CalendarPermissions {
 
-    private val permissions = arrayOf(
+    private val PERMISSIONS = arrayOf(
         Manifest.permission.READ_CALENDAR,
         Manifest.permission.WRITE_CALENDAR
     )
@@ -27,7 +27,7 @@ object CalendarPermissions {
 
     fun isGranted(context: Context?): Boolean {
         var isPermitted = false
-        for (permission in permissions) {
+        for (permission in PERMISSIONS) {
             val result = context?.let { ContextCompat.checkSelfPermission(it, permission) }
             isPermitted = result == PackageManager.PERMISSION_GRANTED
         }
@@ -36,7 +36,7 @@ object CalendarPermissions {
     }
 
     fun request() {
-        launcher?.launch(permissions)
+        launcher?.launch(PERMISSIONS)
     }
 
     fun cleanup() {

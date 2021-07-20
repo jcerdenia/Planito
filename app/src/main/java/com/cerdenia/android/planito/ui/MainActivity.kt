@@ -34,6 +34,13 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    override fun onTaskSettingsClicked() {
+        supportFragmentManager.transact { transaction ->
+            transaction.replace(fragCon, SettingsFragment.newInstance())
+            transaction.addToBackStack(null)
+        }
+    }
+
     override fun onTaskSavedOrDeleted() {
         onBackPressed()
     }

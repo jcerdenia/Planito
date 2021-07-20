@@ -10,6 +10,14 @@ data class TaskTime(
 
     fun toMinutes(): Int = (hour * 60) + minute
 
+    fun toMillis(): Long {
+        return Calendar.getInstance().run {
+            set(Calendar.HOUR_OF_DAY,hour)
+            set(Calendar.MINUTE, minute)
+            timeInMillis
+        }
+    }
+
     fun to12HourFormat(): String {
         return Calendar.getInstance()
             .apply {
@@ -25,8 +33,9 @@ data class TaskTime(
 
     companion object {
 
-        fun fromMinutes(minutes: Int): TaskTime {
-            val hour = kotlin.math.floor(minutes / 60.0).toInt()
+        fun fromMinutes(_minutes: Int): TaskTime {
+            val minutes = if (_minutes > 1440) (_minutes - 1440) else _minutes
+            val hour = kotlin.math.floor(minutes / 60f).toInt()
             val minute = minutes % 60
             return TaskTime(hour, minute)
         }
