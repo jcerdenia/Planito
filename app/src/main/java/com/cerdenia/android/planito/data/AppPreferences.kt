@@ -10,6 +10,7 @@ object AppPreferences {
     private const val NAME = "AppPreferences"
     private const val CALENDAR_EVENT_IDS = "calendar_event_ids"
     private const val CALENDAR_ID = "calendar_id"
+    private const val CALENDAR_NAME = "calendar_name"
     private const val CALENDAR_OWNER = "calendar_owner"
 
     fun init(context: Context) {
@@ -31,13 +32,17 @@ object AppPreferences {
     val calendarID: Long
         get() = preferences.getLong(CALENDAR_ID, 1)
 
+    val calendarName: String
+        get() = preferences.getString(CALENDAR_NAME, "") ?: ""
+
     val calendarOwner: String
         get() = preferences.getString(CALENDAR_OWNER, "") ?: ""
 
-    fun setUserCalendarDetails(id: Long, name: String) {
+    fun setUserCalendarDetails(id: Long, name: String, owner: String) {
         preferences.edit { editor ->
             editor.putLong(CALENDAR_ID, id)
-            editor.putString(CALENDAR_OWNER, name)
+            editor.putString(CALENDAR_NAME, name)
+            editor.putString(CALENDAR_OWNER, owner)
         }
     }
 }

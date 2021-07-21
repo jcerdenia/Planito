@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.tasklist
 
 import android.content.res.Resources
 import android.view.LayoutInflater

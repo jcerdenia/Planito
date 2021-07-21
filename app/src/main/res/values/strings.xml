@@ -33,6 +33,10 @@
     <string name="search_calendars">Search Calendars</string>
     <string name="restore_default">Restore Default</string>
     <string name="default_name">Default</string>
+    <string name="sync_to_calendar">Sync to calendar %s?</string>
+    <string name="change_settings">Change Settings</string>
+    <string name="confirm">Confirm</string>
+    <string name="change_calendar">Change Calendar</string>
 
     <plurals name="hours">
         <item quantity="one">1 hour</item>

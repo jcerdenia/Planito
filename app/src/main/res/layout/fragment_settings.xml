@@ -25,14 +25,6 @@
         android:layout_height="wrap_content"
         android:hint="@string/name_example_com"/>
 
-    <!--
-    <Button
-        android:id="@+id/search_calendars_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/search_calendars"/>
-        -->
-
     <TextView
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
@@ -40,6 +32,7 @@
         android:text="@string/select_calendar"/>
 
     <Spinner
+        android:layout_marginTop="8dp"
         android:id="@+id/calendar_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

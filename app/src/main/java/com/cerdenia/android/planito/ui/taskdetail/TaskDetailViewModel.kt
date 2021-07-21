@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.taskdetail
 
 import androidx.lifecycle.*
 import com.cerdenia.android.planito.data.AppRepository

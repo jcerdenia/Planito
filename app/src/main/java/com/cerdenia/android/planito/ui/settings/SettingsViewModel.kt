@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.settings
 
 import androidx.lifecycle.*
 import com.cerdenia.android.planito.data.AppPreferences
@@ -33,8 +33,8 @@ class SettingsViewModel(
     }
 
     fun setCalendarSelection(index: Int) {
-        calendars?.get(index)?.let { calendar ->
-            AppPreferences.setUserCalendarDetails(calendar.id, calendar.ownerAccount)
+        calendars?.get(index)?.let { cal ->
+            AppPreferences.setUserCalendarDetails(cal.id, cal.displayName, cal.ownerAccount)
         }
     }
 }

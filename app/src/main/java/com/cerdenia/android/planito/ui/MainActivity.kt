@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.cerdenia.android.planito.databinding.ActivityMainBinding
+import com.cerdenia.android.planito.ui.settings.SettingsFragment
+import com.cerdenia.android.planito.ui.taskdetail.TaskDetailFragment
+import com.cerdenia.android.planito.ui.tasklist.TaskListFragment
 import java.util.*
 
 class MainActivity : AppCompatActivity(),

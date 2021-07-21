@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.tasklist
 
 import android.content.Context
 import android.os.Bundle
@@ -56,6 +56,18 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
             adapter.submitList(tasks)
         })
 
+        parentFragmentManager.setFragmentResultListener(
+            ConfirmSyncFragment.CONFIRM,
+            viewLifecycleOwner,
+            { _, _ ->
+                if (CalendarPermissions.isGranted(context)) {
+                    viewModel.syncToCalendar()
+                } else {
+                    CalendarPermissions.request()
+                }
+            }
+        )
+
         binding.fab.setOnClickListener {
             val newTask = Task().apply {
                 startMinutes = viewModel.getLatestItem()?.endMinutes ?: 0
@@ -81,12 +93,9 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
     }
 
     private fun handleSync(): Boolean {
-        if (CalendarPermissions.isGranted(context)) {
-            viewModel.syncToCalendar()
-        } else {
-            CalendarPermissions.request()
-        }
-
+        ConfirmSyncFragment
+            .newInstance(viewModel.userCalendarName)
+            .show(parentFragmentManager, ConfirmSyncFragment.TAG)
         return true
     }
 

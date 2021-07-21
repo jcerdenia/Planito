@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.taskdetail
 
 import android.app.Dialog
 import android.app.TimePickerDialog

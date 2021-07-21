@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -60,7 +60,7 @@ class SettingsFragment : Fragment() {
         binding.saveButton.setOnClickListener {
             val i = binding.calendarSpinner.selectedItemPosition
             viewModel.setCalendarSelection(i)
-            requireActivity().onBackPressed()
+            activity?.onBackPressed()
         }
     }
 

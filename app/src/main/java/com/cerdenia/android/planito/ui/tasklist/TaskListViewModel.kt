@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.tasklist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -16,6 +16,8 @@ class TaskListViewModel(
     val tasksLive: LiveData<List<Task>> get() = _tasksLive
 
     private val tasks get() = tasksLive.value
+
+    val userCalendarName get() = AppPreferences.calendarName
 
     init {
         _tasksLive.addSource(tasksDbLive) { tasks ->

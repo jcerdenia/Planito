@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.taskdetail
 
 import android.content.Context
 import android.os.Bundle
@@ -76,14 +76,12 @@ class TaskDetailFragment : Fragment() {
         }
 
         binding.startTimeButton.setOnClickListener {
-            TimePickerFragment
-                .newInstance(viewModel.taskStart, PICK_START_TIME)
+            TimePickerFragment.newInstance(viewModel.taskStart, PICK_START_TIME)
                 .show(parentFragmentManager, TimePickerFragment.TAG)
         }
 
         binding.endTimeButton.setOnClickListener {
-            TimePickerFragment
-                .newInstance(viewModel.taskEnd, PICK_END_TIME)
+            TimePickerFragment.newInstance(viewModel.taskEnd, PICK_END_TIME)
                 .show(parentFragmentManager, TimePickerFragment.TAG)
         }
 
