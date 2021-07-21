@@ -1,6 +1,5 @@
 package com.cerdenia.android.planito.ui.taskdetail
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.CheckBox
@@ -12,27 +11,16 @@ import com.cerdenia.android.planito.data.model.Task
 import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
 import com.cerdenia.android.planito.extension.getDayCheckBoxes
 import com.cerdenia.android.planito.extension.toEditable
+import com.cerdenia.android.planito.util.OnTextChangedListener
 import java.util.*
 
 class TaskDetailFragment : Fragment() {
-
-    interface Callbacks {
-
-        fun onTaskSavedOrDeleted()
-    }
 
     private var _binding: FragmentTaskDetailBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: TaskDetailViewModel by viewModels()
-    private var callbacks: Callbacks? = null
-
     private lateinit var dayCheckBoxes: List<CheckBox>
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbacks = context as Callbacks?
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +63,10 @@ class TaskDetailFragment : Fragment() {
             })
         }
 
+        binding.nameField.addTextChangedListener(OnTextChangedListener { text ->
+            binding.saveButton.isEnabled = text.isNotBlank()
+        })
+
         binding.startTimeButton.setOnClickListener {
             TimePickerFragment.newInstance(viewModel.taskStart, PICK_START_TIME)
                 .show(parentFragmentManager, TimePickerFragment.TAG)
@@ -88,7 +80,7 @@ class TaskDetailFragment : Fragment() {
         binding.saveButton.setOnClickListener {
             updateTaskDetails()
             viewModel.saveChanges()
-            callbacks?.onTaskSavedOrDeleted()
+            activity?.onBackPressed()
         }
     }
 
@@ -99,13 +91,15 @@ class TaskDetailFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_item_delete -> {
-                viewModel.deleteCurrentTask()
-                callbacks?.onTaskSavedOrDeleted()
-                true
-            }
+            R.id.menu_item_delete -> onDeleteItemSelected()
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun onDeleteItemSelected(): Boolean {
+        viewModel.deleteCurrentTask()
+        activity?.onBackPressed()
+        return true
     }
 
     private fun updateUI(task: Task) {
@@ -135,11 +129,6 @@ class TaskDetailFragment : Fragment() {
         updateTaskDetails()
         _binding = null
         super.onDestroyView()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
     }
 
     companion object {

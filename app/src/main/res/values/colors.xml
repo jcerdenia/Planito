@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Default Colors-->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,4 +8,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!--Custom Colors-->
+    <color name="imperial_red">#e63946</color>
+    <color name="honeydew">#f1faee</color>
+    <color name="powder_blue">#a8dadc</color>
+    <color name="celadon_blue">#457b9d</color>
+    <color name="prussian_blue">#1d3557</color>
 </resources>

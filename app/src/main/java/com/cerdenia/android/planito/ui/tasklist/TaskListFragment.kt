@@ -56,26 +56,31 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
             adapter.submitList(tasks)
         })
 
-        parentFragmentManager.setFragmentResultListener(
-            ConfirmSyncFragment.CONFIRM,
-            viewLifecycleOwner,
-            { _, _ ->
+        parentFragmentManager.apply {
+            setFragmentResultListener(NewTaskFragment.ADD_TASK, viewLifecycleOwner, { _, result ->
+                val newTask = Task().apply {
+                    name = result.getString(NewTaskFragment.TASK_NAME) ?: getString(R.string.new_task)
+                    startMinutes = viewModel.getLatestItem()?.endMinutes ?: 0
+                    setDuration(60)
+                }
+
+                viewModel.addTask(newTask)
+                callbacks?.onTaskSelected(newTask.id)
+            })
+
+            setFragmentResultListener(ConfirmSyncFragment.CONFIRM, viewLifecycleOwner, { _, _ ->
                 if (CalendarPermissions.isGranted(context)) {
                     viewModel.syncToCalendar()
                 } else {
                     CalendarPermissions.request()
                 }
-            }
-        )
+            })
+        }
 
         binding.fab.setOnClickListener {
-            val newTask = Task().apply {
-                startMinutes = viewModel.getLatestItem()?.endMinutes ?: 0
-                setDuration(60)
-            }
-
-            viewModel.addTask(newTask)
-            callbacks?.onTaskSelected(newTask.id)
+            NewTaskFragment
+                .newInstance()
+                .show(parentFragmentManager, NewTaskFragment.TAG)
         }
     }
 
@@ -86,20 +91,20 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_item_sync -> handleSync()
-            R.id.menu_item_settings -> handleOpenSettings()
+            R.id.menu_item_sync -> onSyncMenuItemSelected()
+            R.id.menu_item_settings -> onSettingsMenuItemSelected()
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun handleSync(): Boolean {
+    private fun onSyncMenuItemSelected(): Boolean {
         ConfirmSyncFragment
             .newInstance(viewModel.userCalendarName)
             .show(parentFragmentManager, ConfirmSyncFragment.TAG)
         return true
     }
 
-    private fun handleOpenSettings(): Boolean {
+    private fun onSettingsMenuItemSelected(): Boolean {
         callbacks?.onTaskSettingsClicked()
         return true
     }

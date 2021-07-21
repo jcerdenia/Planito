@@ -3,7 +3,7 @@ package com.cerdenia.android.planito.util
 import android.text.Editable
 import android.text.TextWatcher
 
-class AfterTextChangedListener(
+class OnTextChangedListener(
     private val callback: (String) -> Unit
 ) : TextWatcher {
 

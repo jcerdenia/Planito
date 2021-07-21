@@ -10,7 +10,8 @@
     <string name="Hour">Hour</string>
     <string name="minute">Minute</string>
     <string name="time_range">%1$s – %2$s</string>
-    <string name="duration_text">(%1$s, %2$s)</string>
+    <string name="duration_hours_and_minutes">(%1$s, %2$s)</string>
+    <string name="duration_hours_or_minutes">(%s)</string>
     <string name="end_time">End Time</string>
     <string name="delete">Delete</string>
     <string name="sync">Sync</string>
@@ -37,13 +38,18 @@
     <string name="change_settings">Change Settings</string>
     <string name="confirm">Confirm</string>
     <string name="change_calendar">Change Calendar</string>
+    <string name="new_task">New Task</string>
+    <string name="continue_text">continue</string>
+    <string name="task_name">Task Name</string>
 
     <plurals name="hours">
         <item quantity="one">1 hour</item>
         <item quantity="other">%d hours</item>
+        <item quantity="many">%d hours</item>
     </plurals>
     <plurals name="minutes">
         <item quantity="one">1 minute</item>
         <item quantity="other">%d minutes</item>
+        <item quantity="many">%d minutes</item>
     </plurals>
 </resources>

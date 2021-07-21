@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.cerdenia.android.planito.databinding.FragmentSettingsBinding
 import com.cerdenia.android.planito.extension.toEditable
-import com.cerdenia.android.planito.util.AfterTextChangedListener
+import com.cerdenia.android.planito.util.OnTextChangedListener
 
 class SettingsFragment : Fragment() {
 
@@ -48,7 +48,7 @@ class SettingsFragment : Fragment() {
 
         binding.calendarOwnerField.apply {
             text = viewModel.userCalendarOwner.toEditable()
-            addTextChangedListener(AfterTextChangedListener { calendarOwner ->
+            addTextChangedListener(OnTextChangedListener { calendarOwner ->
                 viewModel.fetchUserCalendars(calendarOwner)
             })
         }

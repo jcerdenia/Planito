@@ -1,6 +1,7 @@
 package com.cerdenia.android.planito.ui.tasklist
 
 import android.content.res.Resources
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,11 +54,23 @@ class TaskListAdapter(
                 task.endTime.to12HourFormat()
             )
 
-            binding.durationTextView.text = resources.getString(
-                R.string.duration_text,
-                resources.getQuantityString(R.plurals.hours, task.duration.hour, task.duration.hour),
-                resources.getQuantityString(R.plurals.minutes, task.duration.minute, task.duration.minute)
-            )
+            val (hour, minute) = task.duration
+            binding.durationTextView.text = when {
+                hour + minute == 0 -> null
+                hour == 0 -> resources.getString(
+                    R.string.duration_hours_or_minutes,
+                    resources.getQuantityString(R.plurals.minutes, minute, minute)
+                )
+                minute == 0 -> resources.getString(
+                    R.string.duration_hours_or_minutes,
+                    resources.getQuantityString(R.plurals.hours, hour, hour)
+                )
+                else -> resources.getString(
+                    R.string.duration_hours_and_minutes,
+                    resources.getQuantityString(R.plurals.hours, hour, hour),
+                    resources.getQuantityString(R.plurals.minutes, minute, minute)
+                )
+            }
 
             binding.daysTextView.text = task.days
                 .toList()
@@ -79,10 +92,5 @@ class TaskListAdapter(
         override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
             return oldItem == newItem
         }
-    }
-
-    companion object {
-
-        private const val TAG = "TaskListAdapter"
     }
 }
