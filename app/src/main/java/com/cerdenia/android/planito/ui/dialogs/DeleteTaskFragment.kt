@@ -1,6 +1,6 @@
 package com.cerdenia.android.planito.ui.dialogs
 
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
@@ -13,7 +13,7 @@ class DeleteTaskFragment : DialogFragment() {
         super.onCreateDialog(savedInstanceState)
         val taskName = arguments?.getString(TASK_NAME) ?: getString(R.string.task)
 
-        val dialog = AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.delete_task, taskName))
             .setCancelable(true)
             .setPositiveButton(R.string.confirm) { dialog, _ ->

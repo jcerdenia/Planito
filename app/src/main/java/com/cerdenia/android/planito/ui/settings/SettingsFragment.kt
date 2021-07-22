@@ -1,5 +1,6 @@
 package com.cerdenia.android.planito.ui.settings
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +8,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.databinding.FragmentSettingsBinding
 import com.cerdenia.android.planito.extensions.toEditable
+import com.cerdenia.android.planito.interfaces.OnFragmentLoaded
 import com.cerdenia.android.planito.utils.OnTextChangedListener
 
 class SettingsFragment : Fragment() {
@@ -17,6 +20,12 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: SettingsViewModel by viewModels()
+    private var callbacks: OnFragmentLoaded? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as OnFragmentLoaded?
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +38,7 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        callbacks?.onFragmentLoaded(TAG)
         return binding.root
     }
 
@@ -67,6 +77,11 @@ class SettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     companion object {

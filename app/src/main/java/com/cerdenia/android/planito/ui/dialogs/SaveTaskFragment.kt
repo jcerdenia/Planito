@@ -1,8 +1,8 @@
 package com.cerdenia.android.planito.ui.dialogs
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.cerdenia.android.planito.R
@@ -18,7 +18,7 @@ class SaveTaskFragment : DialogFragment() {
         val taskName = arguments?.getString(TASK_NAME) ?: ""
         initVariables(requestKey, taskName)
 
-        val dialog = AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(requireContext())
             .setTitle(title)
             .setCancelable(true)
             .setPositiveButton(R.string.yes) { dialog, _ ->

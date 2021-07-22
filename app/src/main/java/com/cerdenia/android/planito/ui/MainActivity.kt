@@ -7,6 +7,7 @@ import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.databinding.ActivityMainBinding
 import com.cerdenia.android.planito.interfaces.CustomBackPress
 import com.cerdenia.android.planito.interfaces.OnFinished
+import com.cerdenia.android.planito.interfaces.OnFragmentLoaded
 import com.cerdenia.android.planito.ui.settings.SettingsFragment
 import com.cerdenia.android.planito.ui.taskdetail.TaskDetailFragment
 import com.cerdenia.android.planito.ui.tasklist.TaskListFragment
@@ -14,6 +15,8 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(),
     TaskListFragment.Callbacks,
+    TaskDetailFragment.Callbacks,
+    OnFragmentLoaded,
     OnFinished
 {
 
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onTaskSelected(taskID: UUID, isNew: Boolean) {
         supportFragmentManager.commit {
-            setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+            setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
             replace(container, TaskDetailFragment.newInstance(taskID, isNew))
             addToBackStack(null)
         }
@@ -43,7 +46,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onTaskSettingsClicked() {
         supportFragmentManager.commit {
-            setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+            setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
             replace(container, SettingsFragment.newInstance())
             addToBackStack(null)
         }
@@ -56,6 +59,14 @@ class MainActivity : AppCompatActivity(),
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onFragmentLoaded(tag: String) {
+        supportActionBar?.title = getString(when (tag) {
+            TaskDetailFragment.TAG -> R.string.edit_task
+            SettingsFragment.TAG -> R.string.settings
+            else -> R.string.app_name
+        })
     }
 
     override fun onFinished() {

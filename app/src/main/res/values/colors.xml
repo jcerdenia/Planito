@@ -9,9 +9,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!--Custom Colors-->
-    <color name="imperial_red">#e63946</color>
-    <color name="honeydew">#f1faee</color>
-    <color name="powder_blue">#a8dadc</color>
-    <color name="celadon_blue">#457b9d</color>
-    <color name="prussian_blue">#1d3557</color>
+    <color name="jet">#30323D</color>
+    <color name="independence">#4D5061</color>
+    <color name="maize_crayola">#E8C547</color>
+    <color name="timberwolf">#CDD1C4</color>
+    <color name="glaucous">#5C80BC</color>
 </resources>

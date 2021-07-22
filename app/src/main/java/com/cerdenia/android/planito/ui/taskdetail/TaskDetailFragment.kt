@@ -11,6 +11,7 @@ import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
 import com.cerdenia.android.planito.extensions.toEditable
 import com.cerdenia.android.planito.interfaces.CustomBackPress
 import com.cerdenia.android.planito.interfaces.OnFinished
+import com.cerdenia.android.planito.interfaces.OnFragmentLoaded
 import com.cerdenia.android.planito.ui.dialogs.DeleteTaskFragment
 import com.cerdenia.android.planito.ui.dialogs.SaveTaskFragment
 import com.cerdenia.android.planito.ui.dialogs.TimePickerFragment
@@ -19,16 +20,18 @@ import java.util.*
 
 class TaskDetailFragment : Fragment(), CustomBackPress {
 
+    interface Callbacks: OnFragmentLoaded, OnFinished
+
     private var _binding: FragmentTaskDetailBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: TaskDetailViewModel by viewModels()
-    private var callbacks: OnFinished? = null
+    private var callbacks: Callbacks? = null
     private lateinit var dayCheckBoxes: DayCheckBoxesUtil
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        callbacks = context as OnFinished?
+        callbacks = context as Callbacks?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +50,7 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
     ): View {
         _binding = FragmentTaskDetailBinding.inflate(inflater, container, false)
         dayCheckBoxes = DayCheckBoxesUtil(requireContext(), binding)
+        callbacks?.onFragmentLoaded(TAG)
         return binding.root
     }
 
@@ -207,7 +211,7 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
 
     companion object {
 
-        private const val TAG = "TaskDetailFragment"
+        const val TAG = "TaskDetailFragment"
         private const val TASK_ID = "task_id"
         private const val IS_NEW_TASK = "is_new_task"
         private const val PICK_START_TIME = "pick_start_time"

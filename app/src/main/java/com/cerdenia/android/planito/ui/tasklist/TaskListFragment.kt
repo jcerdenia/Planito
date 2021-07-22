@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.models.Task
 import com.cerdenia.android.planito.databinding.FragmentTaskListBinding
+import com.cerdenia.android.planito.interfaces.OnFragmentLoaded
 import com.cerdenia.android.planito.ui.dialogs.ConfirmSyncFragment
 import com.cerdenia.android.planito.ui.dialogs.NewTaskFragment
 import com.cerdenia.android.planito.utils.CalendarPermissions
@@ -17,7 +18,7 @@ import java.util.*
 
 class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
-    interface Callbacks {
+    interface Callbacks: OnFragmentLoaded {
 
         fun onTaskSelected(taskID: UUID, isNew: Boolean = false)
 
@@ -48,6 +49,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         _binding = FragmentTaskListBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = adapter
+        callbacks?.onFragmentLoaded(TAG)
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -140,7 +142,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
     companion object {
 
-        private const val TAG = "TaskListFragment"
+        const val TAG = "TaskListFragment"
 
         fun newInstance(): TaskListFragment = TaskListFragment()
     }

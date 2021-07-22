@@ -47,6 +47,7 @@
     <string name="daily">Daily</string>
     <string name="task">task</string>
     <string name="delete_task">Delete %s?</string>
+    <string name="edit_task">Edit Task</string>
 
     <plurals name="hours">
         <item quantity="one">1 hour</item>
