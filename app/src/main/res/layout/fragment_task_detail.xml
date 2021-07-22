@@ -57,52 +57,52 @@
             tools:text="00:00" />
 
         <CheckBox
-            android:id="@+id/sunday_check_box"
+            android:id="@+id/day_check_box_0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sunday"
+            tools:text="@string/sunday"
             />
 
         <CheckBox
-            android:id="@+id/monday_check_box"
+            android:id="@+id/day_check_box_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/monday"
+            tools:text="@string/monday"
             />
 
         <CheckBox
-            android:id="@+id/tuesday_check_box"
+            android:id="@+id/day_check_box_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tuesday"
+            tools:text="@string/tuesday"
             />
 
         <CheckBox
-            android:id="@+id/wednesday_check_box"
+            android:id="@+id/day_check_box_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/wednesday"
+            tools:text="@string/wednesday"
             />
 
         <CheckBox
-            android:id="@+id/thursday_check_box"
+            android:id="@+id/day_check_box_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/thursday"
+            tools:text="@string/thursday"
             />
 
         <CheckBox
-            android:id="@+id/friday_check_box"
+            android:id="@+id/day_check_box_5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/friday"
+            tools:text="@string/friday"
             />
 
         <CheckBox
-            android:id="@+id/saturday_check_box"
+            android:id="@+id/day_check_box_6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/saturday"
+            tools:text="@string/saturday"
             />
 
         <Button

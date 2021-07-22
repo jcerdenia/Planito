@@ -27,9 +27,9 @@ class MainActivity : AppCompatActivity(), TaskListFragment.Callbacks {
         }
     }
 
-    override fun onTaskSelected(taskID: UUID) {
+    override fun onTaskSelected(taskID: UUID, isNew: Boolean) {
         supportFragmentManager.transact {
-            it.replace(container, TaskDetailFragment.newInstance(taskID))
+            it.replace(container, TaskDetailFragment.newInstance(taskID, isNew))
             it.addToBackStack(null)
         }
     }

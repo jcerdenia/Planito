@@ -30,7 +30,8 @@ class TaskListViewModel(
     }
 
     fun getLatestItem(): Task? {
-        return tasksLive.value?.maxByOrNull { it.endTime.toMinutes() }
+        return tasks?.find { it.endMinutes == 0 }
+            ?: tasks?.maxByOrNull { it.endTime.toMinutes() }
     }
 
     fun syncToCalendar() {

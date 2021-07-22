@@ -1,7 +1,6 @@
 package com.cerdenia.android.planito.ui.tasklist
 
 import android.content.res.Resources
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,8 @@ class TaskListAdapter(
     interface Listener {
 
         fun onTaskSelected(taskID: UUID)
+
+        fun onTaskListChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder {
@@ -31,6 +32,14 @@ class TaskListAdapter(
 
     override fun onBindViewHolder(holder: TaskHolder, position: Int) {
         getItem(position).run { holder.bind(this) }
+    }
+
+    override fun onCurrentListChanged(
+        previousList: MutableList<Task>,
+        currentList: MutableList<Task>
+    ) {
+        super.onCurrentListChanged(previousList, currentList)
+        listener.onTaskListChanged()
     }
 
     inner class TaskHolder(
@@ -72,10 +81,19 @@ class TaskListAdapter(
                 )
             }
 
-            binding.daysTextView.text = task.days
-                .toList()
-                .sortedBy { it.ordinal }
-                .joinToString { it.name.substring(0, 3) }
+            binding.daysTextView.text = when {
+                task.days.size == 5 && task.days.all { it.isWeekday } -> {
+                    resources.getString(R.string.weekdays)
+                }
+                task.days.size == 2 && task.days.all { !it.isWeekday } -> {
+                    resources.getString(R.string.weekends)
+                }
+                task.days.size == 7 -> resources.getString(R.string.daily)
+                else -> task.days
+                    .toList()
+                    .sortedBy { it.orderFromSunday }
+                    .joinToString { it.getName(resources).substring(0, 3) }
+            }
         }
 
         override fun onClick(p0: View?) {

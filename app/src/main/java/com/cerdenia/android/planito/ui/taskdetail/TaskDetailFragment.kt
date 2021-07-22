@@ -2,14 +2,11 @@ package com.cerdenia.android.planito.ui.taskdetail
 
 import android.os.Bundle
 import android.view.*
-import android.widget.CheckBox
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.cerdenia.android.planito.R
-import com.cerdenia.android.planito.data.Day
 import com.cerdenia.android.planito.data.model.Task
 import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
-import com.cerdenia.android.planito.extension.getDayCheckBoxes
 import com.cerdenia.android.planito.extension.toEditable
 import com.cerdenia.android.planito.util.OnTextChangedListener
 import java.util.*
@@ -20,7 +17,7 @@ class TaskDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: TaskDetailViewModel by viewModels()
-    private lateinit var dayCheckBoxes: List<CheckBox>
+    private lateinit var dayCheckBoxes: DayCheckBoxesUtil
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +34,7 @@ class TaskDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTaskDetailBinding.inflate(inflater, container, false)
-        dayCheckBoxes = binding.getDayCheckBoxes()
+        dayCheckBoxes = DayCheckBoxesUtil(requireContext(), binding)
         return binding.root
     }
 
@@ -64,7 +61,7 @@ class TaskDetailFragment : Fragment() {
         }
 
         binding.nameField.addTextChangedListener(OnTextChangedListener { text ->
-            binding.saveButton.isEnabled = text.isNotBlank()
+            binding.saveButton.isEnabled = text.isNotBlank() && dayCheckBoxes.isAnyChecked()
         })
 
         binding.startTimeButton.setOnClickListener {
@@ -75,6 +72,10 @@ class TaskDetailFragment : Fragment() {
         binding.endTimeButton.setOnClickListener {
             TimePickerFragment.newInstance(viewModel.taskEnd, PICK_END_TIME)
                 .show(parentFragmentManager, TimePickerFragment.TAG)
+        }
+
+        dayCheckBoxes.setIsAnyCheckedListener { isAnyChecked ->
+            binding.saveButton.isEnabled = isAnyChecked && binding.nameField.text.isNotBlank()
         }
 
         binding.saveButton.setOnClickListener {
@@ -107,21 +108,13 @@ class TaskDetailFragment : Fragment() {
         binding.descriptionField.text = task.description.toEditable()
         binding.startTimeButton.text = task.startTime.to12HourFormat()
         binding.endTimeButton.text = task.endTime.to12HourFormat()
-
-        dayCheckBoxes.forEachIndexed { i, checkBox ->
-            checkBox.isChecked = task.days.contains(Day.list[i])
-        }
+        dayCheckBoxes.setSelections(task.days)
     }
 
     private fun updateTaskDetails() {
         val name = binding.nameField.text.toString()
         val description = binding.descriptionField.text.toString()
-        val days = dayCheckBoxes
-            .mapIndexed { i, checkBox -> Pair(i, checkBox.isChecked) }
-            .filter { it.second } // it.second == true
-            .map { Day.list[it.first] }
-            .toSet()
-
+        val days = dayCheckBoxes.getSelectedDays()
         viewModel.updateTaskDetails(name, description, days)
     }
 
@@ -135,13 +128,15 @@ class TaskDetailFragment : Fragment() {
 
         private const val TAG = "TaskDetailFragment"
         private const val TASK_ID = "task_id"
+        private const val IS_NEW_TASK = "is_new_task"
         private const val PICK_START_TIME = "pick_start_time"
         private const val PICK_END_TIME = "pick_end_time"
 
-        fun newInstance(taskID: UUID): TaskDetailFragment {
+        fun newInstance(taskID: UUID, isNewTask: Boolean = false): TaskDetailFragment {
             return TaskDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(TASK_ID, taskID.toString())
+                    putBoolean(IS_NEW_TASK, isNewTask)
                 }
             }
         }

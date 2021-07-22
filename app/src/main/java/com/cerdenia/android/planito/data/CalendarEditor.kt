@@ -48,6 +48,7 @@ class CalendarEditor(private val context: Context) {
         val timeZone = TimeZone.getDefault().id
 
         for (task in tasks) {
+            if (task.days.isEmpty()) continue
             val startMillis: Long = task.startTime.toMillis()
             var endMillis: Long = task.endTime.toMillis()
             if (endMillis < startMillis) endMillis += 86400000 // Add one extra day.

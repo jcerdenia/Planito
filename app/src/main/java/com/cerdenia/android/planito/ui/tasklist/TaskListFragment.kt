@@ -2,6 +2,7 @@ package com.cerdenia.android.planito.ui.tasklist
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,7 +17,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
     interface Callbacks {
 
-        fun onTaskSelected(taskID: UUID)
+        fun onTaskSelected(taskID: UUID, isNew: Boolean = false)
 
         fun onTaskSettingsClicked()
     }
@@ -65,7 +66,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
                 }
 
                 viewModel.addTask(newTask)
-                callbacks?.onTaskSelected(newTask.id)
+                callbacks?.onTaskSelected(newTask.id, true)
             })
 
             setFragmentResultListener(ConfirmSyncFragment.CONFIRM, viewLifecycleOwner, { _, _ ->
@@ -111,6 +112,10 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
     override fun onTaskSelected(taskID: UUID) {
         callbacks?.onTaskSelected(taskID)
+    }
+
+    override fun onTaskListChanged() {
+        Log.d(TAG, "Task list changed!")
     }
 
     override fun onDestroyView() {

@@ -28,6 +28,7 @@ data class Task(
     }
 
     fun setDuration(minutes: Int) {
-        endMinutes = startMinutes + minutes
+        val dayOffset = if (startMinutes + minutes > 1440) 1440 else 0
+        endMinutes = (startMinutes + minutes) - dayOffset
     }
 }

@@ -41,6 +41,9 @@
     <string name="new_task">New Task</string>
     <string name="continue_text">continue</string>
     <string name="task_name">Task Name</string>
+    <string name="weekdays">Weekdays</string>
+    <string name="weekends">Weekends</string>
+    <string name="daily">Daily</string>
 
     <plurals name="hours">
         <item quantity="one">1 hour</item>
