@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui.taskdetail
+package com.cerdenia.android.planito.ui.dialogs
 
 import android.app.AlertDialog
 import android.app.Dialog

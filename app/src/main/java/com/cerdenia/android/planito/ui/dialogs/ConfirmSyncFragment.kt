@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui.tasklist
+package com.cerdenia.android.planito.ui.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
@@ -17,8 +17,8 @@ class ConfirmSyncFragment : DialogFragment() {
             .setTitle(getString(R.string.sync_to_calendar, calendarName))
             .setCancelable(true)
             .setPositiveButton(R.string.confirm) { dialog, _ ->
-                setFragmentResult(CONFIRM, Bundle.EMPTY)
-                dialog?.dismiss()
+                setFragmentResult(CONFIRM_SYNC, Bundle.EMPTY)
+                dialog.dismiss()
             }
             .create()
 
@@ -29,7 +29,7 @@ class ConfirmSyncFragment : DialogFragment() {
     companion object {
 
         const val TAG = "ConfirmSyncFragment"
-        const val CONFIRM = "confirm"
+        const val CONFIRM_SYNC = "confirm_sync"
 
         private const val CALENDAR_NAME = "calendar_name"
 

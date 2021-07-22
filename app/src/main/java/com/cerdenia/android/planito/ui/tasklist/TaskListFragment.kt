@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.models.Task
 import com.cerdenia.android.planito.databinding.FragmentTaskListBinding
+import com.cerdenia.android.planito.ui.dialogs.ConfirmSyncFragment
+import com.cerdenia.android.planito.ui.dialogs.NewTaskFragment
 import com.cerdenia.android.planito.utils.CalendarPermissions
 import java.util.*
 
@@ -58,7 +60,9 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         })
 
         parentFragmentManager.setFragmentResultListener(
-            NewTaskFragment.ADD_TASK, viewLifecycleOwner, { _, result ->
+            NewTaskFragment.ADD_TASK,
+            viewLifecycleOwner,
+            { _, result ->
                 val newTask = Task().apply {
                     name = result.getString(NewTaskFragment.TASK_NAME) ?: getString(R.string.new_task)
                     startMinutes = viewModel.getLatestItem()?.endMinutes ?: 0
@@ -67,16 +71,17 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
                 viewModel.addTask(newTask)
                 callbacks?.onTaskSelected(newTask.id, true)
-            })
+            }
+        )
 
         parentFragmentManager.setFragmentResultListener(
-            ConfirmSyncFragment.CONFIRM, viewLifecycleOwner, { _, _ ->
-                if (CalendarPermissions.isGranted(context)) {
-                    viewModel.syncToCalendar()
-                } else {
-                    CalendarPermissions.request()
-                }
-            })
+            ConfirmSyncFragment.CONFIRM_SYNC,
+            viewLifecycleOwner,
+            { _, _ ->
+                val isPermitted = CalendarPermissions.isGranted(context)
+                if (isPermitted) viewModel.syncToCalendar() else CalendarPermissions.request()
+            }
+        )
     }
 
     override fun onStart() {

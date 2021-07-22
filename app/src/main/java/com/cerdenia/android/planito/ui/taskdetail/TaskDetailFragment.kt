@@ -11,6 +11,9 @@ import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
 import com.cerdenia.android.planito.extensions.toEditable
 import com.cerdenia.android.planito.interfaces.CustomBackPress
 import com.cerdenia.android.planito.interfaces.OnFinished
+import com.cerdenia.android.planito.ui.dialogs.DeleteTaskFragment
+import com.cerdenia.android.planito.ui.dialogs.SaveTaskFragment
+import com.cerdenia.android.planito.ui.dialogs.TimePickerFragment
 import com.cerdenia.android.planito.utils.OnTextChangedListener
 import java.util.*
 
@@ -55,30 +58,48 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
         })
 
         parentFragmentManager.setFragmentResultListener(
-            PICK_START_TIME, viewLifecycleOwner, { _, result ->
+            PICK_START_TIME,
+            viewLifecycleOwner,
+            { _, result ->
                 val time = TimePickerFragment.unbundleFragmentResult(result)
                 binding.startTimeButton.text = time.to12HourFormat()
                 viewModel.onTaskStartTimeChanged(time)
-            })
+            }
+        )
 
         parentFragmentManager.setFragmentResultListener(
-            PICK_END_TIME, viewLifecycleOwner, { _, result ->
+            PICK_END_TIME,
+            viewLifecycleOwner,
+            { _, result ->
                 val time = TimePickerFragment.unbundleFragmentResult(result)
                 binding.endTimeButton.text = time.to12HourFormat()
                 viewModel.onTaskEndTimeChanged(time)
-            })
+            }
+        )
 
         parentFragmentManager.setFragmentResultListener(
-            SaveTaskFragment.SAVE_CHANGES, viewLifecycleOwner, { _, result ->
+            SaveTaskFragment.SAVE_CHANGES,
+            viewLifecycleOwner,
+            { _, result ->
                 val shouldSave = result.getBoolean(SaveTaskFragment.SHOULD_SAVE)
                 if (shouldSave) saveTaskAndFinish() else callbacks?.onFinished()
-            })
+            }
+        )
 
         parentFragmentManager.setFragmentResultListener(
-            SaveTaskFragment.SAVE_OR_DELETE, viewLifecycleOwner, { _, result ->
+            SaveTaskFragment.SAVE_OR_DELETE,
+            viewLifecycleOwner,
+            { _, result ->
                 val shouldSave = result.getBoolean(SaveTaskFragment.SHOULD_SAVE)
                 if (shouldSave) saveTaskAndFinish() else deleteTaskAndFinish()
-            })
+            }
+        )
+
+        parentFragmentManager.setFragmentResultListener(
+            DeleteTaskFragment.CONFIRM_DELETE,
+            viewLifecycleOwner,
+            { _, _ -> deleteTaskAndFinish() }
+        )
     }
 
     override fun onStart() {
@@ -114,10 +135,7 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_item_delete -> {
-                deleteTaskAndFinish()
-                true
-            }
+            R.id.menu_item_delete -> handleDeleteItemSelected()
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -135,6 +153,13 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
         val description = binding.descriptionField.text.toString()
         val days = dayCheckBoxes.getSelectedDays()
         viewModel.updateTaskDetails(name, description, days)
+    }
+
+    private fun handleDeleteItemSelected(): Boolean {
+        DeleteTaskFragment
+            .newInstance(viewModel.taskName)
+            .show(parentFragmentManager, DeleteTaskFragment.TAG)
+        return true
     }
 
     private fun saveTaskAndFinish() {

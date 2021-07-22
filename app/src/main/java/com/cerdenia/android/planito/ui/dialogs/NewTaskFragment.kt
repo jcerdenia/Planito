@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.ui.tasklist
+package com.cerdenia.android.planito.ui.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
@@ -21,7 +21,7 @@ class NewTaskFragment : DialogFragment() {
         val taskNameField = EditText(context).apply {
             hint = getString(R.string.task_name)
             isSingleLine = true
-            inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
+            inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
             addTextChangedListener(OnTextChangedListener { text ->
                 positiveButton?.isEnabled = text.isNotBlank()
             })
