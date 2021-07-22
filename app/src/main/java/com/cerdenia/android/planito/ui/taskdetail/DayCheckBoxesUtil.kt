@@ -2,7 +2,7 @@ package com.cerdenia.android.planito.ui.taskdetail
 
 import android.content.Context
 import android.widget.CheckBox
-import com.cerdenia.android.planito.data.Day
+import com.cerdenia.android.planito.data.model.Day
 import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
 
 class DayCheckBoxesUtil(
@@ -24,7 +24,7 @@ class DayCheckBoxesUtil(
 
     init {
         Day.list()
-            .sortedBy { it.orderFromMonday }
+            .sortedBy { it.orderFromSunday }
             .onEachIndexed { i, day -> checkBoxMap[day] = checkBoxes[i] }
             .forEach { day -> checkBoxMap[day]?.text = day.getName(context) }
     }

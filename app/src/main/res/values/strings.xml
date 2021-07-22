@@ -48,11 +48,9 @@
     <plurals name="hours">
         <item quantity="one">1 hour</item>
         <item quantity="other">%d hours</item>
-        <item quantity="many">%d hours</item>
     </plurals>
     <plurals name="minutes">
-        <item quantity="one">1 minute</item>
-        <item quantity="other">%d minutes</item>
-        <item quantity="many">%d minutes</item>
+        <item quantity="one">1 min</item>
+        <item quantity="other">%d mins</item>
     </plurals>
 </resources>

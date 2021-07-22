@@ -1,8 +1,7 @@
 package com.cerdenia.android.planito.data.db
 
 import androidx.room.TypeConverter
-import com.cerdenia.android.planito.data.Day
-import com.cerdenia.android.planito.data.model.TaskTime
+import com.cerdenia.android.planito.data.model.Day
 import java.util.*
 
 class AppTypeConverters {

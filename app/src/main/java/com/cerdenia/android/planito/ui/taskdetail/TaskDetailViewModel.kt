@@ -2,7 +2,7 @@ package com.cerdenia.android.planito.ui.taskdetail
 
 import androidx.lifecycle.*
 import com.cerdenia.android.planito.data.AppRepository
-import com.cerdenia.android.planito.data.Day
+import com.cerdenia.android.planito.data.model.Day
 import com.cerdenia.android.planito.data.model.Task
 import com.cerdenia.android.planito.data.model.TaskTime
 import java.util.*

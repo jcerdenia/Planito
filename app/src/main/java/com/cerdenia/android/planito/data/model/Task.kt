@@ -3,7 +3,6 @@ package com.cerdenia.android.planito.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.cerdenia.android.planito.data.Day
 import java.util.*
 
 @Entity
