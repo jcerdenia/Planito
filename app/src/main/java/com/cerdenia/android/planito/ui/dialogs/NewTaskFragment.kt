@@ -4,9 +4,9 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Button
-import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.cerdenia.android.planito.R
@@ -18,7 +18,7 @@ class NewTaskFragment : DialogFragment() {
         super.onCreateDialog(savedInstanceState)
 
         var positiveButton: Button? = null
-        val taskNameField = EditText(context).apply {
+        val taskNameField = AppCompatEditText(requireContext()).apply {
             hint = getString(R.string.task_name)
             isSingleLine = true
             inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
