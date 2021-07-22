@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.extension
+package com.cerdenia.android.planito.extensions
 
 import android.text.Editable
 

@@ -3,7 +3,7 @@ package com.cerdenia.android.planito.ui.settings
 import androidx.lifecycle.*
 import com.cerdenia.android.planito.data.AppPreferences
 import com.cerdenia.android.planito.data.AppRepository
-import com.cerdenia.android.planito.data.model.UserCalendar
+import com.cerdenia.android.planito.data.models.UserCalendar
 
 class SettingsViewModel(
     private val repo: AppRepository = AppRepository.getInstance()

@@ -2,7 +2,7 @@ package com.cerdenia.android.planito.ui.taskdetail
 
 import android.content.Context
 import android.widget.CheckBox
-import com.cerdenia.android.planito.data.model.Day
+import com.cerdenia.android.planito.data.models.Day
 import com.cerdenia.android.planito.databinding.FragmentTaskDetailBinding
 
 class DayCheckBoxesUtil(

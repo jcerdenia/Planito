@@ -1,7 +1,7 @@
 package com.cerdenia.android.planito.data
 
 import com.cerdenia.android.planito.data.db.AppDatabase
-import com.cerdenia.android.planito.data.model.Task
+import com.cerdenia.android.planito.data.models.Task
 import java.util.*
 import java.util.concurrent.Executors
 

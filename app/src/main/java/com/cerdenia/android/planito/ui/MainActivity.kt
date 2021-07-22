@@ -5,12 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.databinding.ActivityMainBinding
+import com.cerdenia.android.planito.interfaces.CustomBackPress
+import com.cerdenia.android.planito.interfaces.OnFinished
 import com.cerdenia.android.planito.ui.settings.SettingsFragment
 import com.cerdenia.android.planito.ui.taskdetail.TaskDetailFragment
 import com.cerdenia.android.planito.ui.tasklist.TaskListFragment
 import java.util.*
 
-class MainActivity : AppCompatActivity(), TaskListFragment.Callbacks {
+class MainActivity : AppCompatActivity(),
+    TaskListFragment.Callbacks,
+    OnFinished
+{
 
     private lateinit var binding: ActivityMainBinding
     private var container = 0
@@ -42,5 +47,18 @@ class MainActivity : AppCompatActivity(), TaskListFragment.Callbacks {
             replace(container, SettingsFragment.newInstance())
             addToBackStack(null)
         }
+    }
+
+    override fun onBackPressed() {
+        val currentFragment = supportFragmentManager.findFragmentById(container)
+        if (currentFragment is CustomBackPress) {
+            currentFragment.onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onFinished() {
+        super.onBackPressed()
     }
 }

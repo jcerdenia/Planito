@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.data.model
+package com.cerdenia.android.planito.data.models
 
 import java.text.DateFormat
 import java.util.*

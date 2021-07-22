@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.util
+package com.cerdenia.android.planito.utils
 
 import android.text.Editable
 import android.text.TextWatcher

@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.cerdenia.android.planito.databinding.FragmentSettingsBinding
-import com.cerdenia.android.planito.extension.toEditable
-import com.cerdenia.android.planito.util.OnTextChangedListener
+import com.cerdenia.android.planito.extensions.toEditable
+import com.cerdenia.android.planito.utils.OnTextChangedListener
 
 class SettingsFragment : Fragment() {
 

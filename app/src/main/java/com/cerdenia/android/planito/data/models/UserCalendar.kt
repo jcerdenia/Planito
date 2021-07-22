@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.data.model
+package com.cerdenia.android.planito.data.models
 
 import android.content.Context
 import com.cerdenia.android.planito.R

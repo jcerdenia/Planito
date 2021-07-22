@@ -5,7 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.cerdenia.android.planito.data.AppPreferences
 import com.cerdenia.android.planito.data.AppRepository
-import com.cerdenia.android.planito.data.model.Task
+import com.cerdenia.android.planito.data.models.Task
 
 class TaskListViewModel(
     private val repo: AppRepository = AppRepository.getInstance()

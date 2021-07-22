@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.cerdenia.android.planito.R
-import com.cerdenia.android.planito.util.OnTextChangedListener
+import com.cerdenia.android.planito.utils.OnTextChangedListener
 
 class NewTaskFragment : DialogFragment() {
 

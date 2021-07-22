@@ -2,9 +2,9 @@ package com.cerdenia.android.planito.ui.taskdetail
 
 import androidx.lifecycle.*
 import com.cerdenia.android.planito.data.AppRepository
-import com.cerdenia.android.planito.data.model.Day
-import com.cerdenia.android.planito.data.model.Task
-import com.cerdenia.android.planito.data.model.TaskTime
+import com.cerdenia.android.planito.data.models.Day
+import com.cerdenia.android.planito.data.models.Task
+import com.cerdenia.android.planito.data.models.TaskTime
 import java.util.*
 
 class TaskDetailViewModel(
@@ -75,6 +75,12 @@ class TaskDetailViewModel(
         endMinutes = taskEnd.toMinutes(),
         days = taskDays
     )
+
+    fun isTaskChanged(): Boolean {
+        val unsavedTask = getTaskWithUnsavedChanges()
+        val isTaskUnchanged = currentTask?.areContentsTheSame(unsavedTask) ?: true
+        return !isTaskUnchanged
+    }
 
     fun saveChanges() {
         currentTask?.let { task ->

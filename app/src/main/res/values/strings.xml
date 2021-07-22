@@ -25,6 +25,7 @@
     <string name="default_description">A reminder from Planito</string>
     <string name="yes">Yes</string>
     <string name="save_changes_to">Save changes to %s?</string>
+    <string name="save_task_name">Save %s?</string>
     <string name="no">No</string>
     <string name="calendar_owner">Calendar Owner ID</string>
     <string name="calendar_sync_settings">Calendar Sync Settings</string>
@@ -44,6 +45,7 @@
     <string name="weekdays">Weekdays</string>
     <string name="weekends">Weekends</string>
     <string name="daily">Daily</string>
+    <string name="task">task</string>
 
     <plurals name="hours">
         <item quantity="one">1 hour</item>

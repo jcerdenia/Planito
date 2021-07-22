@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.util
+package com.cerdenia.android.planito.utils
 
 import android.Manifest
 import android.content.Context

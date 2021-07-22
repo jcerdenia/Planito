@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.cerdenia.android.planito.data.model.Task
+import com.cerdenia.android.planito.data.models.Task
 
 @Database(
     entities = [Task::class],

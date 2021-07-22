@@ -1,4 +1,4 @@
-package com.cerdenia.android.planito.data.model
+package com.cerdenia.android.planito.data.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -29,5 +29,16 @@ data class Task(
     fun setDuration(minutes: Int) {
         val dayOffset = if (startMinutes + minutes > 1440) 1440 else 0
         endMinutes = (startMinutes + minutes) - dayOffset
+    }
+
+    fun areContentsTheSame(task: Task): Boolean {
+        return listOf(
+            name == task.name,
+            description == task.description,
+            startMinutes == task.startMinutes,
+            endMinutes == task.endMinutes,
+            days == task.days
+        )
+            .all { it } // all true
     }
 }
