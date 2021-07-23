@@ -1,5 +1,7 @@
-package com.cerdenia.android.planito.ui
+package com.cerdenia.android.planito.ui.activities
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
@@ -71,5 +73,12 @@ class MainActivity : AppCompatActivity(),
 
     override fun onFinished() {
         super.onBackPressed()
+    }
+
+    companion object {
+
+        fun newIntent(context: Context): Intent {
+            return Intent(context, MainActivity::class.java)
+        }
     }
 }
