@@ -20,8 +20,6 @@ class TaskListAdapter(
     interface Listener {
 
         fun onTaskSelected(taskID: UUID)
-
-        fun onTaskListChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder {
@@ -32,14 +30,6 @@ class TaskListAdapter(
 
     override fun onBindViewHolder(holder: TaskHolder, position: Int) {
         getItem(position).run { holder.bind(this) }
-    }
-
-    override fun onCurrentListChanged(
-        previousList: MutableList<Task>,
-        currentList: MutableList<Task>
-    ) {
-        super.onCurrentListChanged(previousList, currentList)
-        listener.onTaskListChanged()
     }
 
     inner class TaskHolder(

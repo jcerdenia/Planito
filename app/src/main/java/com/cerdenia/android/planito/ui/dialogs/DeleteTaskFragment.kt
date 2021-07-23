@@ -10,32 +10,26 @@ import com.cerdenia.android.planito.R
 class DeleteTaskFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        super.onCreateDialog(savedInstanceState)
-        val taskName = arguments?.getString(TASK_NAME) ?: getString(R.string.task)
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.delete_task, taskName))
+        return AlertDialog.Builder(requireContext())
+            .setTitle(R.string.delete_this_task)
             .setCancelable(true)
             .setPositiveButton(R.string.confirm) { dialog, _ ->
-                setFragmentResult(CONFIRM_DELETE, Bundle.EMPTY)
+                arguments?.getString(REQUEST_KEY)?.let { setFragmentResult(it, Bundle.EMPTY) }
                 dialog.dismiss()
             }
             .create()
-
-        dialog.show()
-        return dialog
     }
 
     companion object {
 
         const val TAG = "DeleteTaskFragment"
-        const val CONFIRM_DELETE = "confirm_delete"
-        private const val TASK_NAME = "task_name"
 
-        fun newInstance(taskName: String): DeleteTaskFragment {
+        private const val REQUEST_KEY = "request_key"
+
+        fun newInstance(requestKey: String): DeleteTaskFragment {
             return DeleteTaskFragment().apply {
                 arguments = Bundle().apply {
-                    putString(TASK_NAME, taskName)
+                    putString(REQUEST_KEY, requestKey)
                 }
             }
         }

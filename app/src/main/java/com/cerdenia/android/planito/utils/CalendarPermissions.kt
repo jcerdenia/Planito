@@ -17,7 +17,7 @@ object CalendarPermissions {
 
     private var launcher: ActivityResultLauncher<Array<out String>>? = null
 
-    fun setResultIfGranted(fragment: Fragment, callback: () -> Unit) {
+    fun setResultWhenGranted(fragment: Fragment, callback: () -> Unit) {
         val contract = ActivityResultContracts.RequestMultiplePermissions()
         launcher = fragment.registerForActivityResult(contract) { permissions ->
             val isGranted = permissions.all { it.value == true }
@@ -25,7 +25,7 @@ object CalendarPermissions {
         }
     }
 
-    fun isGranted(context: Context?): Boolean {
+    fun isAlreadyGranted(context: Context?): Boolean {
         var isPermitted = false
         for (permission in PERMISSIONS) {
             val result = context?.let { ContextCompat.checkSelfPermission(it, permission) }

@@ -2,7 +2,6 @@ package com.cerdenia.android.planito.ui.tasklist
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -11,6 +10,7 @@ import com.cerdenia.android.planito.R
 import com.cerdenia.android.planito.data.models.Task
 import com.cerdenia.android.planito.databinding.FragmentTaskListBinding
 import com.cerdenia.android.planito.interfaces.OnFragmentLoaded
+import com.cerdenia.android.planito.ui.dialogs.AlertFragment
 import com.cerdenia.android.planito.ui.dialogs.ConfirmSyncFragment
 import com.cerdenia.android.planito.ui.dialogs.NewTaskFragment
 import com.cerdenia.android.planito.utils.CalendarPermissions
@@ -20,7 +20,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
     interface Callbacks: OnFragmentLoaded {
 
-        fun onTaskSelected(taskID: UUID, isNew: Boolean = false)
+        fun onTaskSelected(taskID: UUID)
 
         fun onTaskSettingsClicked()
     }
@@ -36,9 +36,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         super.onAttach(context)
         callbacks = context as Callbacks?
         adapter = TaskListAdapter(context.resources, this)
-        CalendarPermissions.setResultIfGranted(this) {
-            viewModel.syncToCalendar()
-        }
+        CalendarPermissions.setResultWhenGranted(this, ::syncToCalendar)
     }
 
     override fun onCreateView(
@@ -62,7 +60,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         })
 
         parentFragmentManager.setFragmentResultListener(
-            NewTaskFragment.ADD_TASK,
+            REQUEST_ADD_TASK,
             viewLifecycleOwner,
             { _, result ->
                 val newTask = Task().apply {
@@ -72,16 +70,16 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
                 }
 
                 viewModel.addTask(newTask)
-                callbacks?.onTaskSelected(newTask.id, true)
+                callbacks?.onTaskSelected(newTask.id)
             }
         )
 
         parentFragmentManager.setFragmentResultListener(
-            ConfirmSyncFragment.CONFIRM_SYNC,
+            REQUEST_CONFIRM_SYNC,
             viewLifecycleOwner,
             { _, _ ->
-                val isPermitted = CalendarPermissions.isGranted(context)
-                if (isPermitted) viewModel.syncToCalendar() else CalendarPermissions.request()
+                val isPermitted = CalendarPermissions.isAlreadyGranted(context)
+                if (isPermitted) syncToCalendar() else CalendarPermissions.request()
             }
         )
     }
@@ -91,7 +89,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
         binding.fab.setOnClickListener {
             NewTaskFragment
-                .newInstance()
+                .newInstance(REQUEST_ADD_TASK)
                 .show(parentFragmentManager, NewTaskFragment.TAG)
         }
     }
@@ -111,7 +109,7 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
 
     private fun onSyncMenuItemSelected(): Boolean {
         ConfirmSyncFragment
-            .newInstance(viewModel.userCalendarName)
+            .newInstance(REQUEST_CONFIRM_SYNC, viewModel.userCalendarName)
             .show(parentFragmentManager, ConfirmSyncFragment.TAG)
         return true
     }
@@ -121,12 +119,15 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
         return true
     }
 
-    override fun onTaskSelected(taskID: UUID) {
-        callbacks?.onTaskSelected(taskID)
+    private fun syncToCalendar() {
+        viewModel.syncToCalendar()
+        AlertFragment
+            .newInstance(R.string.synced, R.string.synced_message, R.drawable.ic_success)
+            .show(parentFragmentManager, ConfirmSyncFragment.TAG)
     }
 
-    override fun onTaskListChanged() {
-        Log.d(TAG, "Task list changed!")
+    override fun onTaskSelected(taskID: UUID) {
+        callbacks?.onTaskSelected(taskID)
     }
 
     override fun onDestroyView() {
@@ -143,6 +144,9 @@ class TaskListFragment : Fragment(), TaskListAdapter.Listener {
     companion object {
 
         const val TAG = "TaskListFragment"
+
+        private const val REQUEST_CONFIRM_SYNC = "request_confirm_sync"
+        private const val REQUEST_ADD_TASK = "request_add_task"
 
         fun newInstance(): TaskListFragment = TaskListFragment()
     }

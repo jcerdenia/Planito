@@ -9,58 +9,40 @@ import com.cerdenia.android.planito.R
 
 class SaveTaskFragment : DialogFragment() {
 
-    private lateinit var title: String
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        super.onCreateDialog(savedInstanceState)
-
-        val requestKey = arguments?.getString(REQUEST_KEY) ?: ""
-        val taskName = arguments?.getString(TASK_NAME) ?: ""
-        initVariables(requestKey, taskName)
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle(title)
+        val requestKey = arguments?.getString(REQUEST_KEY)
+        return AlertDialog.Builder(requireContext())
+            .setTitle(R.string.save_changes_to_task)
             .setCancelable(true)
             .setPositiveButton(R.string.yes) { dialog, _ ->
-                setFragmentResult(requestKey, Bundle().apply {
-                    putBoolean(SHOULD_SAVE, true)
-                })
+               requestKey?.let { key ->
+                   setFragmentResult(key, Bundle().apply {
+                       putBoolean(IS_POSITIVE, true)
+                   })
+                }
                 dialog.dismiss()
             }
             .setNegativeButton(R.string.no) { dialog, _ ->
-                setFragmentResult(requestKey, Bundle().apply {
-                    putBoolean(SHOULD_SAVE, false)
-                })
+                requestKey?.let { key ->
+                    setFragmentResult(key, Bundle().apply {
+                        putBoolean(IS_POSITIVE, false)
+                    })
+                }
                 dialog.dismiss()
             }
             .create()
-
-        dialog.show()
-        return dialog
-    }
-
-    private fun initVariables(requestKey: String, taskName: String) {
-        when (requestKey) {
-            SAVE_CHANGES -> title = getString(R.string.save_changes_to, taskName)
-            SAVE_OR_DELETE -> title = getString(R.string.save_task_name, taskName)
-        }
     }
 
     companion object {
 
         const val TAG = "SaveTaskFragment"
-        const val SAVE_OR_DELETE = "save_or_delete"
-        const val SAVE_CHANGES = "save_changes"
-        const val SHOULD_SAVE = "should_save"
-
+        const val IS_POSITIVE = "is_positive"
         private const val REQUEST_KEY = "request_key"
-        private const val TASK_NAME = "task_name"
 
-        fun newInstance(requestKey: String, taskName: String): SaveTaskFragment {
+        fun newInstance(requestKey: String): SaveTaskFragment {
             return SaveTaskFragment().apply {
                 arguments = Bundle().apply {
                     putString(REQUEST_KEY, requestKey)
-                    putString(TASK_NAME, taskName)
                 }
             }
         }

@@ -12,6 +12,7 @@ import com.cerdenia.android.planito.extensions.toEditable
 import com.cerdenia.android.planito.interfaces.CustomBackPress
 import com.cerdenia.android.planito.interfaces.OnFinished
 import com.cerdenia.android.planito.interfaces.OnFragmentLoaded
+import com.cerdenia.android.planito.ui.dialogs.AlertFragment
 import com.cerdenia.android.planito.ui.dialogs.DeleteTaskFragment
 import com.cerdenia.android.planito.ui.dialogs.SaveTaskFragment
 import com.cerdenia.android.planito.ui.dialogs.TimePickerFragment
@@ -20,7 +21,7 @@ import java.util.*
 
 class TaskDetailFragment : Fragment(), CustomBackPress {
 
-    interface Callbacks: OnFragmentLoaded, OnFinished
+    interface Callbacks : OnFragmentLoaded, OnFinished
 
     private var _binding: FragmentTaskDetailBinding? = null
     private val binding get() = _binding!!
@@ -62,7 +63,7 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
         })
 
         parentFragmentManager.setFragmentResultListener(
-            PICK_START_TIME,
+            REQUEST_PICK_START_TIME,
             viewLifecycleOwner,
             { _, result ->
                 val time = TimePickerFragment.unbundleFragmentResult(result)
@@ -72,7 +73,7 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
         )
 
         parentFragmentManager.setFragmentResultListener(
-            PICK_END_TIME,
+            REQUEST_PICK_END_TIME,
             viewLifecycleOwner,
             { _, result ->
                 val time = TimePickerFragment.unbundleFragmentResult(result)
@@ -82,25 +83,21 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
         )
 
         parentFragmentManager.setFragmentResultListener(
-            SaveTaskFragment.SAVE_CHANGES,
+            REQUEST_SAVE_CHANGES,
             viewLifecycleOwner,
             { _, result ->
-                val shouldSave = result.getBoolean(SaveTaskFragment.SHOULD_SAVE)
-                if (shouldSave) saveTaskAndFinish() else callbacks?.onFinished()
+                when {
+                    !result.getBoolean(SaveTaskFragment.IS_POSITIVE) -> callbacks?.onFinished()
+                    binding.saveButton.isEnabled -> saveTaskAndFinish()
+                    else -> AlertFragment
+                        .newInstance(R.string.unable_to_save, R.string.unable_to_save_message)
+                        .show(parentFragmentManager, AlertFragment.TAG)
+                }
             }
         )
 
         parentFragmentManager.setFragmentResultListener(
-            SaveTaskFragment.SAVE_OR_DELETE,
-            viewLifecycleOwner,
-            { _, result ->
-                val shouldSave = result.getBoolean(SaveTaskFragment.SHOULD_SAVE)
-                if (shouldSave) saveTaskAndFinish() else deleteTaskAndFinish()
-            }
-        )
-
-        parentFragmentManager.setFragmentResultListener(
-            DeleteTaskFragment.CONFIRM_DELETE,
+            REQUEST_DELETE,
             viewLifecycleOwner,
             { _, _ -> deleteTaskAndFinish() }
         )
@@ -114,12 +111,14 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
         })
 
         binding.startTimeButton.setOnClickListener {
-            TimePickerFragment.newInstance(viewModel.taskStart, PICK_START_TIME)
+            TimePickerFragment
+                .newInstance(REQUEST_PICK_START_TIME, viewModel.taskStart)
                 .show(parentFragmentManager, TimePickerFragment.TAG)
         }
 
         binding.endTimeButton.setOnClickListener {
-            TimePickerFragment.newInstance(viewModel.taskEnd, PICK_END_TIME)
+            TimePickerFragment
+                .newInstance(REQUEST_PICK_END_TIME, viewModel.taskEnd)
                 .show(parentFragmentManager, TimePickerFragment.TAG)
         }
 
@@ -161,7 +160,7 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
 
     private fun handleDeleteItemSelected(): Boolean {
         DeleteTaskFragment
-            .newInstance(viewModel.taskName)
+            .newInstance(REQUEST_DELETE)
             .show(parentFragmentManager, DeleteTaskFragment.TAG)
         return true
     }
@@ -178,28 +177,22 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
     }
 
     override fun onBackPressed() {
-        // If task is new, prompt to save or delete. Else, prompt to save changes.
-        when (arguments?.getBoolean(IS_NEW_TASK) ?: false) {
-            true -> {
-                SaveTaskFragment
-                    .newInstance(SaveTaskFragment.SAVE_OR_DELETE, viewModel.taskName)
-                    .show(parentFragmentManager, SaveTaskFragment.TAG)
-            }
-            false -> {
-                updateTaskDetails()
-                if (viewModel.isTaskChanged()) {
-                    SaveTaskFragment
-                        .newInstance(SaveTaskFragment.SAVE_CHANGES, viewModel.taskName)
-                        .show(parentFragmentManager, SaveTaskFragment.TAG)
-                } else {
-                    callbacks?.onFinished()
-                }
-            }
+        updateTaskDetails()
+        if (viewModel.isTaskChanged()) {
+            SaveTaskFragment
+                .newInstance(REQUEST_SAVE_CHANGES)
+                .show(parentFragmentManager, SaveTaskFragment.TAG)
+        } else {
+            callbacks?.onFinished()
         }
     }
 
-    override fun onDestroyView() {
+    override fun onPause() {
+        super.onPause()
         updateTaskDetails()
+    }
+
+    override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
     }
@@ -213,15 +206,17 @@ class TaskDetailFragment : Fragment(), CustomBackPress {
 
         const val TAG = "TaskDetailFragment"
         private const val TASK_ID = "task_id"
-        private const val IS_NEW_TASK = "is_new_task"
-        private const val PICK_START_TIME = "pick_start_time"
-        private const val PICK_END_TIME = "pick_end_time"
 
-        fun newInstance(taskID: UUID, isNewTask: Boolean = false): TaskDetailFragment {
+        // Dialog fragment request keys
+        private const val REQUEST_PICK_START_TIME = "request_pick_start_time"
+        private const val REQUEST_PICK_END_TIME = "request_pick_end_time"
+        private const val REQUEST_SAVE_CHANGES = "request_save_changes"
+        private const val REQUEST_DELETE = "request_delete"
+
+        fun newInstance(taskID: UUID): TaskDetailFragment {
             return TaskDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(TASK_ID, taskID.toString())
-                    putBoolean(IS_NEW_TASK, isNewTask)
                 }
             }
         }

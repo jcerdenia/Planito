@@ -36,10 +36,10 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onTaskSelected(taskID: UUID, isNew: Boolean) {
+    override fun onTaskSelected(taskID: UUID) {
         supportFragmentManager.commit {
             setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
-            replace(container, TaskDetailFragment.newInstance(taskID, isNew))
+            replace(container, TaskDetailFragment.newInstance(taskID))
             addToBackStack(null)
         }
     }

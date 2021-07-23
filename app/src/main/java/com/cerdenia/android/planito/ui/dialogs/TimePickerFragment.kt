@@ -10,13 +10,12 @@ import com.cerdenia.android.planito.data.models.TaskTime
 class TimePickerFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val requestKey = arguments?.getString(REQUEST_KEY)
         val hour = arguments?.getInt(HOUR) ?: 0
         val minute = arguments?.getInt(MINUTE) ?: 0
 
-        val timeListener = requestKey?.let { key ->
+        val timeListener = arguments?.getString(REQUEST_KEY)?.let { requestKey ->
             TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-                setFragmentResult(key, Bundle().apply {
+                setFragmentResult(requestKey, Bundle().apply {
                     putInt(HOUR, hour)
                     putInt(MINUTE, minute)
                 })
@@ -33,7 +32,7 @@ class TimePickerFragment : DialogFragment() {
         private const val HOUR = "hour"
         private const val MINUTE = "minute"
 
-        fun newInstance(time: TaskTime, requestKey: String): TimePickerFragment {
+        fun newInstance(requestKey: String, time: TaskTime): TimePickerFragment {
             return TimePickerFragment().apply {
                 arguments = Bundle().apply {
                     putString(REQUEST_KEY, requestKey)

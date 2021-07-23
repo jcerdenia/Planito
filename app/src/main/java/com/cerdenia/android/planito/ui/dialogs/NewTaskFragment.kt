@@ -14,10 +14,9 @@ import com.cerdenia.android.planito.utils.OnTextChangedListener
 
 class NewTaskFragment : DialogFragment() {
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        super.onCreateDialog(savedInstanceState)
+    private var positiveButton: Button? = null
 
-        var positiveButton: Button? = null
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val taskNameField = AppCompatEditText(requireContext()).apply {
             hint = getString(R.string.task_name)
             isSingleLine = true
@@ -27,7 +26,7 @@ class NewTaskFragment : DialogFragment() {
             })
         }
 
-        val dialog = AlertDialog.Builder(requireContext())
+        return AlertDialog.Builder(requireContext())
             .setTitle(R.string.new_task)
             .setView(FrameLayout(requireContext()).apply {
                 setPaddingRelative(60, 16, 60, 0)
@@ -35,26 +34,36 @@ class NewTaskFragment : DialogFragment() {
             })
             .setCancelable(true)
             .setPositiveButton(R.string.continue_text) { dialog, _ ->
-                setFragmentResult(ADD_TASK, Bundle().apply {
-                    putString(TASK_NAME, taskNameField.text.toString())
-                })
+                arguments?.getString(REQUEST_KEY)?.let { requestKey ->
+                    setFragmentResult(requestKey, Bundle().apply {
+                        putString(TASK_NAME, taskNameField.text.toString())
+                    })
+                }
                 dialog?.dismiss()
             }
             .create()
+    }
 
-        dialog.show()
-        // After showing dialog, initialize positive button state.
-        positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE)
-        positiveButton.isEnabled = false // Initial state
-        return dialog
+    override fun onStart() {
+        super.onStart()
+        // After dialog is visible, initialize positive button state.
+        positiveButton = (dialog as AlertDialog).getButton(Dialog.BUTTON_POSITIVE)
+        positiveButton?.isEnabled = false // Initial state
     }
 
     companion object {
 
         const val TAG = "NewTaskFragment"
-        const val ADD_TASK = "add_task"
         const val TASK_NAME = "task_name"
 
-        fun newInstance() = NewTaskFragment()
+        private const val REQUEST_KEY = "request_key"
+
+        fun newInstance(requestKey: String): NewTaskFragment {
+            return NewTaskFragment().apply {
+                arguments = Bundle().apply {
+                    putString(REQUEST_KEY, requestKey)
+                }
+            }
+        }
     }
 }
