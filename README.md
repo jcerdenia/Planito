@@ -1,3 +1,3 @@
 # Planito
 
-Soon-to-be MVP for a scheduling app for creator economy types who have flexible schedules yet need a little more structure in their lives (e.g., me).
+MVP for a scheduling/calendar helper app. Easily create or edit recurring events (daily or weekly), and sync to your Google or device calendar of choice. Coming soon to the Play Store.
